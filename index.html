@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFB Calc</title>
+  <style>
+    :root {
+      --bg: #0f1728;
+      --panel: #182338;
+      --panel-soft: #1d2a44;
+      --line: rgba(154, 177, 214, 0.18);
+      --line-strong: rgba(190, 210, 242, 0.26);
+      --text: #f2f6ff;
+      --muted: #8fa5cd;
+      --blue: #4f92ff;
+      --blue-strong: #3579eb;
+      --pill: #22304c;
+      --danger: #ff7f86;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Inter, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79, 146, 255, 0.14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(99, 197, 255, 0.10), transparent 24%),
+        linear-gradient(180deg, #0b1322 0%, #10192c 100%);
+      padding: 16px;
+    }
+
+    .app {
+      width: min(1220px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 360px 1fr 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(24, 35, 56, 0.96), rgba(20, 30, 48, 0.94));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h2, h3, p {
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      border: 1px solid rgba(255, 127, 134, 0.45);
+      color: #ff9ca1;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      background: rgba(255, 127, 134, 0.08);
+    }
+
+    .badge.ready {
+      border-color: rgba(111, 229, 156, 0.42);
+      color: #9df0b8;
+      background: rgba(111, 229, 156, 0.10);
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 44px 0 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line-strong);
+      background: rgba(14, 23, 37, 0.46);
+      color: var(--text);
+      outline: none;
+      font-size: 15px;
+    }
+
+    .search-input::placeholder {
+      color: #7287af;
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .stat-main {
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 700;
+      margin: 2px 0 6px;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .divider {
+      border-top: 1px solid var(--line);
+      margin: 14px 0;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(12, 19, 31, 0.65);
+      margin-bottom: 16px;
+    }
+
+    .segmented button,
+    .level-btn,
+    .action-btn {
+      font: inherit;
+      cursor: pointer;
+      border: 0;
+      color: var(--text);
+    }
+
+    .segmented button {
+      border-radius: 999px;
+      height: 34px;
+      background: transparent;
+      font-weight: 600;
+    }
+
+    .segmented button.active {
+      background: linear-gradient(180deg, var(--blue), var(--blue-strong));
+    }
+
+    .level-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .level-btn,
+    .level-display {
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid var(--line-strong);
+      background: rgba(12, 19, 31, 0.65);
+      font-weight: 600;
+    }
+
+    .level-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .level-display {
+      width: 100%;
+      text-align: center;
+      color: var(--text);
+      outline: none;
+      font: inherit;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .level-display::-webkit-outer-spin-button,
+    .level-display::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .action-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, var(--blue), var(--blue-strong));
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .mutations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mutation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      border-radius: 17px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      background: #ffffff;
+      color: #12203a;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .mutation:hover {
+      transform: translateY(-1px);
+      border-color: rgba(126, 171, 255, 0.9);
+    }
+
+    .mutation.active {
+      background: #dce9ff;
+      border-color: rgba(102, 165, 255, 0.95);
+    }
+
+    .mutation-name {
+      font-weight: 600;
+    }
+
+    .mutation-bonus {
+      color: #5573a5;
+      white-space: nowrap;
+    }
+
+    .result-card {
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .metric {
+      min-height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .search-results {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #16233a;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      display: none;
+      z-index: 5;
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .search-option {
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+    }
+
+    .search-option:hover {
+      background: rgba(79, 146, 255, 0.12);
+    }
+
+    .empty-state {
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <div class="section-head">
+        <h3>Inputs</h3>
+        <div class="badge" id="statusBadge">Invalid</div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="brainrotSearch">Brainrot</label>
+        <div class="search-wrap">
+          <input id="brainrotSearch" class="search-input" type="text" placeholder="Search brainrot..." autocomplete="off">
+          <button class="clear-search" id="clearSearch" aria-label="Clear search">×</button>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="subtle">Base Stat</div>
+        <div class="stat-main" id="baseStat">—</div>
+        <div class="subtle" id="selectedUnit">$ / Fish</div>
+      </div>
+
+      <div class="card">
+        <div class="subtle">Mutation Total</div>
+        <div class="stat-main" id="mutationTotal">0%</div>
+        <div class="subtle">stacked</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="meta-row">
+        <span class="label" style="margin: 0;">Rank</span>
+        <span class="subtle">+15% per rank</span>
+      </div>
+      <div class="segmented" id="rankSelector"></div>
+
+      <div class="field">
+        <label class="label">Level</label>
+        <div class="level-row">
+          <button class="level-btn" id="levelDown">−</button>
+          <input class="level-display" id="levelValue" type="number" min="1" step="1" value="1" inputmode="numeric">
+          <button class="level-btn" id="levelUp">+</button>
+        </div>
+        <div class="subtle">+50% per level after 1</div>
+      </div>
+
+      <button class="action-btn" id="calculateBtn">Calculate Stat</button>
+    </section>
+
+    <section class="panel">
+      <div class="section-head" style="display:block;">
+        <h3 style="margin-bottom:8px;">Bonuses</h3>
+        <p class="subtle">Tap to toggle. Percentages stack (sum → multiplier).</p>
+      </div>
+      <div class="field" style="margin-bottom: 18px;">
+        <div class="meta-row" style="margin-bottom: 10px;">
+          <span class="label" style="margin: 0;">Traits</span>
+        </div>
+        <div class="mutations-grid" id="traitsGrid"></div>
+      </div>
+      <div class="field" style="margin-bottom: 0;">
+        <div class="meta-row" style="margin-bottom: 10px;">
+          <span class="label" style="margin: 0;">Mutations</span>
+        </div>
+        <div class="mutations-grid" id="mutationsGrid"></div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="card result-card">
+        <div class="subtle">Final Stat</div>
+        <div class="stat-main" id="finalStat">—</div>
+        <div class="subtle" id="finalUnit">$ / Fish</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card metric">
+        <span class="subtle">Rank multiplier</span>
+        <span class="metric-value" id="rankMultiplier">—</span>
+      </div>
+
+      <div class="card metric">
+        <span class="subtle">Level multiplier</span>
+        <span class="metric-value" id="levelMultiplier">—</span>
+      </div>
+
+      <div class="card metric">
+        <span class="subtle">Mutation multiplier</span>
+        <span class="metric-value" id="mutationMultiplier">—</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card metric">
+        <span class="subtle">Base × all multipliers</span>
+        <span class="metric-value" id="formulaValue">—</span>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const baseStats = [
+      { name: "$ Tung Tung Sahur", value: 100, unit: "$ / Fish" },
+      { name: "$ Cappucino Assasino", value: 150, unit: "$ / Fish" },
+      { name: "$ Pipi Potato", value: 300, unit: "$ / Fish" },
+      { name: "$ Cappucina Ballerina", value: 450, unit: "$ / Fish" },
+      { name: "$ Salamino Penguino", value: 750, unit: "$ / Fish" },
+      { name: "$ Fluriflura", value: 937, unit: "$ / Fish" },
+      { name: "$ Tim Cheese", value: 1125, unit: "$ / Fish" },
+      { name: "$ Orangutini Anasasini", value: 1875, unit: "$ / Fish" },
+      { name: "$ Brr Brr Patapim", value: 3000, unit: "$ / Fish" },
+      { name: "$ Noo My Hotspot", value: 3500, unit: "$ / Fish" },
+      { name: "$ Udin Din Din Dun", value: 4500, unit: "$ / Fish" },
+      { name: "$ Pipi Kiwi", value: 5250, unit: "$ / Fish" },
+      { name: "$ Chef Crabracadabra", value: 9000, unit: "$ / Fish" },
+      { name: "$ Boneca Ambalabu", value: 12000, unit: "$ / Fish" },
+      { name: "$ Cacto Hipopotamo", value: 13500, unit: "$ / Fish" },
+      { name: "$ Capi Taco", value: 15000, unit: "$ / Fish" },
+      { name: "$ Sigma Boy", value: 18000, unit: "$ / Fish" },
+      { name: "$ Tukanno Banano", value: 32000, unit: "$ / Fish" },
+      { name: "$ Gorillo Watermelodrillo", value: 37500, unit: "$ / Fish" },
+      { name: "$ Tric Trac Barabum", value: 52500, unit: "$ / Fish" },
+      { name: "$ Avocadini Guffo", value: 63750, unit: "$ / Fish" },
+      { name: "$ Tacorita Tacorito", value: 100000, unit: "$ / Fish" },
+      { name: "$ Quivioli Ameleoni", value: 100000, unit: "$ / Fish" },
+      { name: "$ Friggo Camelo", value: 150000, unit: "$ / Fish" },
+      { name: "$ Glorbo Fruttodrillo", value: 187500, unit: "$ / Fish" },
+      { name: "$ Pakrahmatmamat", value: 225000, unit: "$ / Fish" },
+      { name: "$ Karkerkar Kurkur", value: 350000, unit: "$ / Fish" },
+      { name: "$ La Vacca Saturno Saturnita", value: 1000000, unit: "$ / Fish" },
+      { name: "$ Tic Tac Sahur", value: 1750000, unit: "$ / Fish" },
+      { name: "$ Pot Hotspot", value: 2250000, unit: "$ / Fish" },
+      { name: "$ Cocofanto Elefanto", value: 2375000, unit: "$ / Fish" },
+      { name: "$ Job Job Sahur", value: 2500000, unit: "$ / Fish" },
+      { name: "$ La Cucaracha", value: 2750000, unit: "$ / Fish" },
+      { name: "$ La Grande Combination", value: 3000000, unit: "$ / Fish" },
+      { name: "$ Cuadramat & Pak", value: 3750000, unit: "$ / Fish" },
+      { name: "$ Dul Dul Dul", value: 4500000, unit: "$ / Fish" },
+      { name: "$ Cavallo Virtuoso", value: 5000000, unit: "$ / Fish" },
+      { name: "$ Nuclearo Dinosauro", value: 5000000, unit: "$ / Fish" },
+      { name: "$ 67", value: 5500000, unit: "$ / Fish" },
+      { name: "$ Cupcake Koala", value: 6000000, unit: "$ / Fish" },
+      { name: "$ Esok Sekolah", value: 6500000, unit: "$ / Fish" },
+      { name: "$ Girafa Celestre", value: 8000000, unit: "$ / Fish" },
+      { name: "$ Chillin Chilli", value: 10000000, unit: "$ / Fish" },
+      { name: "$ Swag Soda", value: 12500000, unit: "$ / Fish" },
+      { name: "$ Matteo", value: 15000000, unit: "$ / Fish" },
+      { name: "$ Strawberelli Flamingelli", value: 15500000, unit: "$ / Fish" },
+      { name: "$ Ketupat Kepat", value: 16000000, unit: "$ / Fish" },
+      { name: "$ Skull Skull Skull", value: 18000000, unit: "$ / Fish" },
+      { name: "$ Tortuggini Dragonfruttini", value: 18500000, unit: "$ / Fish" },
+      { name: "$ Mangolini Parrocini", value: 20000000, unit: "$ / Fish" },
+      { name: "$ Cocosini Mama", value: 20000000, unit: "$ / Fish" },
+      { name: "$ Ganganzelli Trulala", value: 22500000, unit: "$ / Fish" },
+      { name: "$ Pipi Corni", value: 25000000, unit: "$ / Fish" },
+      { name: "$ Strawberry Elephant", value: 50000000, unit: "$ / Fish" },
+      { name: "$ Crystalini Ananassini", value: 55000000, unit: "$ / Fish" },
+      { name: "$ Meowl", value: 65000000, unit: "$ / Fish" },
+      { name: "$ Spiuniru Golubiru", value: 70000000, unit: "$ / Fish" },
+      { name: "$ Dragon Canneloni", value: 75000000, unit: "$ / Fish" },
+      { name: "$ Tigroligre Frutonni", value: 80000000, unit: "$ / Fish" },
+      { name: "$ Alessio", value: 80000000, unit: "$ / Fish" },
+      { name: "$ Bombini Gusini", value: 85000000, unit: "$ / Fish" },
+      { name: "$ Mariachi Skeletoni", value: 87500000, unit: "$ / Fish" },
+      { name: "$ Chicleteira Bicicleteira", value: 90000000, unit: "$ / Fish" },
+      { name: "$ Piccione Maccina", value: 92500000, unit: "$ / Fish" },
+      { name: "$ Crabbo Limonetta", value: 95000000, unit: "$ / Fish" },
+      { name: "$ Bandito Axolito", value: 110000000, unit: "$ / Fish" },
+      { name: "$ Stoppo Luminino", value: 120000000, unit: "$ / Fish" },
+      { name: "$ Money Money Man", value: 125000000, unit: "$ / Fish" },
+      { name: "$ Signore Carapace", value: 175000000, unit: "$ / Fish" },
+      { name: "$ Karloo", value: 225000000, unit: "$ / Fish" },
+      { name: "$ Mastodontico Telepedone", value: 325000000, unit: "$ / Fish" },
+      { name: "$ Pirulitoita Bicicleteira", value: 420000000, unit: "$ / Fish" },
+      { name: "$ Skeletoni Canneloni", value: 650000000, unit: "$ / Fish" },
+      { name: "$ Spaghetti Tualetti", value: 750000000, unit: "$ / Fish" },
+      { name: "$ Arcade Octo", value: 800000000, unit: "$ / Fish" },
+      { name: "$ Bananini Manini", value: 850000000, unit: "$ / Fish" },
+      { name: "$ Namini Meowini", value: 900000000, unit: "$ / Fish" },
+      { name: "$ Cerberus", value: 1200000000, unit: "$ / Fish" },
+      { name: "$ Hydra Canneloni", value: 1500000000, unit: "$ / Fish" },
+      { name: "$ Mr Chip", value: 2000000000, unit: "$ / Fish" },
+      { name: "$ Los Tralaleros", value: 2500000000, unit: "$ / Fish" },
+      { name: "$ Money Pug", value: 3000000000, unit: "$ / Fish" },
+      { name: "$ Tripi Tropa", value: 4000000000, unit: "$ / Fish" },
+      { name: "$ Cashy", value: 5000000000, unit: "$ / Fish" }
+    ];
+
+    const traits = [
+      ["Snowy", 50], ["Sakura", 60],
+      ["Tornado", 70], ["Stinky", 80],
+      ["Lightning", 90], ["Taco", 100],
+      ["Meteor", 100], ["Blackhole", 100],
+      ["Radioactive", 110], ["Galaxy", 120],
+      ["Magmatic", 140], ["Disco", 200]
+    ];
+
+    const mutations = [
+      ["Golden", 50], ["Diamond", 100],
+      ["Rainbow", 150], ["Fishing Master", 200],
+      ["Giant", 300]
+    ];
+
+    const state = {
+      selectedStat: null,
+      rank: 0,
+      level: 1,
+      selectedMutations: new Set()
+    };
+
+    const els = {
+      search: document.getElementById("brainrotSearch"),
+      clear: document.getElementById("clearSearch"),
+      results: document.getElementById("searchResults"),
+      baseStat: document.getElementById("baseStat"),
+      selectedUnit: document.getElementById("selectedUnit"),
+      mutationTotal: document.getElementById("mutationTotal"),
+      rankSelector: document.getElementById("rankSelector"),
+      levelValue: document.getElementById("levelValue"),
+      statusBadge: document.getElementById("statusBadge"),
+      finalStat: document.getElementById("finalStat"),
+      finalUnit: document.getElementById("finalUnit"),
+      rankMultiplier: document.getElementById("rankMultiplier"),
+      levelMultiplier: document.getElementById("levelMultiplier"),
+      mutationMultiplier: document.getElementById("mutationMultiplier"),
+      formulaValue: document.getElementById("formulaValue"),
+      traitsGrid: document.getElementById("traitsGrid"),
+      mutationsGrid: document.getElementById("mutationsGrid"),
+      calculateBtn: document.getElementById("calculateBtn")
+    };
+
+    function formatMoney(value) {
+      if (value >= 1000000000000) {
+        const trillions = value / 1000000000000;
+        return `${Number(trillions.toFixed(trillions >= 10 ? 0 : 2)).toString()}T`;
+      }
+
+      if (value >= 1000000000) {
+        const billions = value / 1000000000;
+        return `${Number(billions.toFixed(billions >= 10 ? 0 : 2)).toString()}B`;
+      }
+
+      if (value >= 1000000) {
+        const millions = value / 1000000;
+        return `${Number(millions.toFixed(millions >= 10 ? 0 : 2)).toString()}M`;
+      }
+
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: value >= 100 ? 0 : 2
+      }).format(value);
+    }
+
+    function renderRanks() {
+      els.rankSelector.innerHTML = "";
+      for (let i = 0; i <= 4; i += 1) {
+        const button = document.createElement("button");
+        button.textContent = String(i);
+        if (state.rank === i) button.classList.add("active");
+        button.addEventListener("click", () => {
+          state.rank = i;
+          renderRanks();
+          calculate();
+        });
+        els.rankSelector.appendChild(button);
+      }
+    }
+
+    function renderBonusGrid(container, items) {
+      container.innerHTML = "";
+      for (const [name, bonus] of items) {
+        const item = document.createElement("button");
+        item.className = "mutation";
+        if (state.selectedMutations.has(name)) item.classList.add("active");
+        item.innerHTML = `
+          <span class="mutation-name">${name}</span>
+          <span class="mutation-bonus">+${bonus}%</span>
+        `;
+        item.addEventListener("click", () => {
+          if (state.selectedMutations.has(name)) {
+            state.selectedMutations.delete(name);
+          } else {
+            state.selectedMutations.add(name);
+          }
+          renderBonusGrid(els.traitsGrid, traits);
+          renderBonusGrid(els.mutationsGrid, mutations);
+          calculate();
+        });
+        container.appendChild(item);
+      }
+    }
+
+    function updateSearchResults(query) {
+      const normalized = query.trim().toLowerCase();
+      const matches = baseStats.filter((item) =>
+        item.name.toLowerCase().includes(normalized) ||
+        item.name.replace("$ ", "").toLowerCase().includes(normalized)
+      );
+      els.results.innerHTML = "";
+
+      if (!query.trim()) {
+        els.results.classList.remove("show");
+        return;
+      }
+
+      if (!matches.length) {
+        els.results.innerHTML = '<div class="empty-state">No matching stats found.</div>';
+      } else {
+        for (const match of matches) {
+          const option = document.createElement("div");
+          option.className = "search-option";
+          option.innerHTML = `<span>${match.name}</span><span class="subtle">${match.value} ${match.unit}</span>`;
+          option.addEventListener("click", () => {
+            state.selectedStat = match;
+            els.search.value = match.name;
+            els.results.classList.remove("show");
+            calculate();
+          });
+          els.results.appendChild(option);
+        }
+      }
+
+      els.results.classList.add("show");
+    }
+
+    function calculate() {
+      const mutationPercent = [...state.selectedMutations]
+        .map((name) =>
+          [...traits, ...mutations].find(([bonusName]) => bonusName === name)?.[1] || 0
+        )
+        .reduce((sum, value) => sum + value, 0);
+
+      const rankMult = 1 + (state.rank * 0.15);
+      const levelMult = 1 + Math.max(0, state.level - 1) * 0.5;
+      const mutationMult = 1 + mutationPercent / 100;
+
+      els.mutationTotal.textContent = `${mutationPercent}%`;
+      els.levelValue.value = String(state.level);
+
+      if (!state.selectedStat) {
+        els.baseStat.textContent = "—";
+        els.finalStat.textContent = "—";
+        els.rankMultiplier.textContent = "—";
+        els.levelMultiplier.textContent = "—";
+        els.mutationMultiplier.textContent = "—";
+        els.formulaValue.textContent = "—";
+        els.statusBadge.textContent = "Invalid";
+        els.statusBadge.classList.remove("ready");
+        return;
+      }
+
+      const finalValue = state.selectedStat.value * rankMult * levelMult * mutationMult;
+
+      els.baseStat.textContent = formatMoney(state.selectedStat.value);
+      els.selectedUnit.textContent = state.selectedStat.unit;
+      els.finalStat.textContent = formatMoney(finalValue);
+      els.finalUnit.textContent = state.selectedStat.unit;
+      els.rankMultiplier.textContent = `${rankMult.toFixed(2)}×`;
+      els.levelMultiplier.textContent = `${levelMult.toFixed(2)}×`;
+      els.mutationMultiplier.textContent = `${mutationMult.toFixed(2)}×`;
+      els.formulaValue.textContent = `${formatMoney(finalValue)}`;
+      els.statusBadge.textContent = "Ready";
+      els.statusBadge.classList.add("ready");
+    }
+
+    document.getElementById("levelDown").addEventListener("click", () => {
+      state.level = Math.max(1, state.level - 1);
+      calculate();
+    });
+
+    document.getElementById("levelUp").addEventListener("click", () => {
+      state.level += 1;
+      calculate();
+    });
+
+    els.levelValue.addEventListener("input", (event) => {
+      const rawValue = event.target.value.replace(/[^\d]/g, "");
+      if (!rawValue) {
+        event.target.value = "";
+        return;
+      }
+
+      state.level = Math.max(1, Number(rawValue));
+      calculate();
+    });
+
+    els.levelValue.addEventListener("blur", (event) => {
+      if (!event.target.value.trim()) {
+        state.level = 1;
+        calculate();
+      }
+    });
+
+    els.search.addEventListener("input", (event) => {
+      if (!event.target.value.trim()) {
+        state.selectedStat = null;
+        calculate();
+      }
+      updateSearchResults(event.target.value);
+    });
+
+    els.clear.addEventListener("click", () => {
+      els.search.value = "";
+      state.selectedStat = null;
+      els.results.classList.remove("show");
+      calculate();
+    });
+
+    els.calculateBtn.addEventListener("click", calculate);
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".search-wrap")) {
+        els.results.classList.remove("show");
+      }
+    });
+
+    renderRanks();
+    renderBonusGrid(els.traitsGrid, traits);
+    renderBonusGrid(els.mutationsGrid, mutations);
+    calculate();
+  </script>
+</body>
+</html>
