@@ -107,6 +107,36 @@
       position: relative;
     }
 
+    .selected-brainrot-label {
+      position: absolute;
+      left: 14px;
+      right: 44px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+      display: none;
+      z-index: 1;
+    }
+
+    .search-wrap.has-selection .selected-brainrot-label {
+      display: block;
+    }
+
+    .search-wrap.has-selection .search-input {
+      color: transparent;
+      caret-color: var(--text);
+    }
+
+    .search-wrap.has-selection .search-input::selection {
+      background: rgba(79, 146, 255, 0.24);
+      color: transparent;
+    }
+
     .search-input {
       width: 100%;
       height: 44px;
@@ -319,7 +349,35 @@
       background: linear-gradient(180deg, var(--blue), var(--blue-strong));
       font-weight: 700;
       margin-top: 10px;
-      transition: background 180ms ease, box-shadow 180ms ease, color 180ms ease;
+      transition: background 180ms ease, box-shadow 180ms ease, color 180ms ease, transform 120ms ease;
+      transform: scale(1);
+    }
+
+    .action-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .action-btn:disabled,
+    .level-btn:disabled,
+    .level-display:disabled,
+    .mutation:disabled,
+    .segmented button:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .mutation:disabled:hover,
+    .segmented button:disabled:hover {
+      transform: none;
+      border-color: rgba(255, 255, 255, 0.82);
+    }
+
+    .level-btn:disabled,
+    .level-display:disabled,
+    .segmented button:disabled,
+    .mutation:disabled,
+    .action-btn:disabled {
+      filter: none;
     }
 
     .mutations-grid {
@@ -383,10 +441,10 @@
       background:
         repeating-linear-gradient(
           135deg,
-          #111318 0 72px,
-          #ffffff 72px 144px,
-          #111318 144px 216px,
-          #ffffff 216px 288px
+          var(--bonus-color-1, #7fd7ff) 0 72px,
+          var(--bonus-color-2, #4f92ff) 72px 144px,
+          var(--bonus-color-3, var(--bonus-color-1, #7fd7ff)) 144px 216px,
+          var(--bonus-color-4, var(--bonus-color-2, #4f92ff)) 216px 288px
         );
       background-size: 500% 500%;
       opacity: 0;
@@ -676,7 +734,8 @@
     .brainrot-wave-black-white,
     .brainrot-wave-sun,
     .brainrot-wave-ocean,
-    .brainrot-rainbow {
+    .brainrot-rainbow,
+    .brainrot-top-secret {
       background-size: 220% 220%;
       color: transparent;
       -webkit-background-clip: text;
@@ -714,6 +773,10 @@
 
     .brainrot-rainbow {
       background-image: linear-gradient(120deg, #ff7b7b 0%, #ffba66 18%, #fff06e 36%, #82ef9f 54%, #7fd7ff 72%, #a88dff 86%, #ff8ddb 100%);
+    }
+
+    .brainrot-top-secret {
+      background-image: linear-gradient(120deg, #0f1117 0%, #4d0a0f 20%, #a8131d 44%, #ff4d4d 62%, #700d15 82%, #0f1117 100%);
     }
 
     @keyframes brainrotWave {
@@ -761,6 +824,7 @@
         <label class="label" for="brainrotSearch">Brainrot</label>
         <div class="search-wrap">
           <input id="brainrotSearch" class="search-input" type="text" placeholder="Search brainrot..." autocomplete="off">
+          <div class="selected-brainrot-label brainrot-name" id="selectedBrainrotLabel"></div>
           <button class="clear-search" id="clearSearch" aria-label="Clear search">×</button>
           <div class="search-results" id="searchResults"></div>
         </div>
@@ -939,7 +1003,8 @@
       { name: "Tripi Tropa", value: 4000000000, unit: "$ / Fish" },
       { name: "Cashy", value: 5000000000, unit: "$ / Fish" },
       { name: "Rico Dinero", value: null, unit: "Unavailable", unavailable: true },
-      { name: "Arca Dragon", value: null, unit: "Unavailable", unavailable: true }
+      { name: "Arca Dragon", value: null, unit: "Unavailable", unavailable: true },
+      { name: "Chanchan", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true }
     ];
 
     const traits = [
@@ -956,6 +1021,25 @@
       ["Rainbow", 150], ["Fishing Master", 200],
       ["Giant", 200]
     ];
+
+    const animatedAccentPairs = {
+      "brainrot-gray": ["#a9b2c3", "#a9b2c3", "#a9b2c3", "#a9b2c3"],
+      "brainrot-green": ["#76e58d", "#76e58d", "#76e58d", "#76e58d"],
+      "brainrot-light-blue": ["#86cfff", "#86cfff", "#86cfff", "#86cfff"],
+      "brainrot-purple": ["#b68cff", "#b68cff", "#b68cff", "#b68cff"],
+      "brainrot-light-yellow": ["#ffe679", "#ffe679", "#ffe679", "#ffe679"],
+      "brainrot-red": ["#ff7a7a", "#ff7a7a", "#ff7a7a", "#ff7a7a"],
+      "brainrot-dark-pink": ["#e08bc2", "#e08bc2", "#e08bc2", "#e08bc2"],
+      "brainrot-wave-gray": ["#0f1117", "#666b74", "#d6d9df", "#555a63"],
+      "brainrot-yellow-orange": ["#ffe86f", "#ffd84e", "#ffb347", "#ff9937"],
+      "brainrot-white-black-mid": ["#ffffff", "#e7e7e7", "#111111", "#ebebeb"],
+      "brainrot-wave-rainbow": ["#94ddff", "#4f92ff", "#9b6dff", "#f58fd6"],
+      "brainrot-wave-black-white": ["#ffffff", "#d7d7d7", "#0f1117", "#c8ccd4"],
+      "brainrot-wave-sun": ["#ffef7e", "#ffc85e", "#ffb347", "#ff9937"],
+      "brainrot-wave-ocean": ["#c7f6ff", "#6cc3ff", "#3f7ff0", "#16358f"],
+      "brainrot-rainbow": ["#ff7b7b", "#ffba66", "#7fd7ff", "#a88dff"],
+      "brainrot-top-secret": ["#0f1117", "#4d0a0f", "#ff4d4d", "#700d15"]
+    };
 
     const brainrotColors = {
       "Tung Tung Sahur": "brainrot-gray",
@@ -1043,7 +1127,8 @@
       "Tripi Tropa": "brainrot-wave-ocean",
       "Cashy": "brainrot-wave-ocean",
       "Rico Dinero": "brainrot-rainbow",
-      "Arca Dragon": "brainrot-rainbow"
+      "Arca Dragon": "brainrot-rainbow",
+      "Chanchan": "brainrot-top-secret"
     };
 
     const accentMap = {
@@ -1061,7 +1146,8 @@
       "brainrot-wave-black-white": "accent-wave-black-white",
       "brainrot-wave-sun": "accent-wave-sun",
       "brainrot-wave-ocean": "accent-wave-ocean",
-      "brainrot-rainbow": "accent-rainbow"
+      "brainrot-rainbow": "accent-rainbow",
+      "brainrot-top-secret": "accent-red"
     };
 
     const darkTextAccents = new Set([
@@ -1075,12 +1161,15 @@
       selectedStat: null,
       rank: 0,
       level: 1,
-      selectedMutations: new Set()
+      selectedMutations: new Set(),
+      hasCalculated: false
     };
 
     const els = {
       search: document.getElementById("brainrotSearch"),
+      searchWrap: document.querySelector(".search-wrap"),
       clear: document.getElementById("clearSearch"),
+      selectedBrainrotLabel: document.getElementById("selectedBrainrotLabel"),
       results: document.getElementById("searchResults"),
       baseStat: document.getElementById("baseStat"),
       selectedUnit: document.getElementById("selectedUnit"),
@@ -1096,7 +1185,9 @@
       formulaValue: document.getElementById("formulaValue"),
       traitsGrid: document.getElementById("traitsGrid"),
       mutationsGrid: document.getElementById("mutationsGrid"),
-      calculateBtn: document.getElementById("calculateBtn")
+      calculateBtn: document.getElementById("calculateBtn"),
+      levelDown: document.getElementById("levelDown"),
+      levelUp: document.getElementById("levelUp")
     };
 
     function formatMoney(value) {
@@ -1126,6 +1217,32 @@
       }
     }
 
+    function updateSelectedBrainrotLabel() {
+      els.selectedBrainrotLabel.className = "selected-brainrot-label brainrot-name";
+
+      if (!state.selectedStat) {
+        els.selectedBrainrotLabel.textContent = "";
+        els.searchWrap.classList.remove("has-selection");
+        return;
+      }
+
+      const brainrotClass = brainrotColors[state.selectedStat.name];
+      if (brainrotClass) {
+        els.selectedBrainrotLabel.classList.add(brainrotClass);
+      }
+      els.selectedBrainrotLabel.textContent = state.selectedStat.name;
+      els.searchWrap.classList.add("has-selection");
+    }
+
+    function getSelectedAnimatedPair() {
+      if (!state.selectedStat) {
+        return ["#7fd7ff", "#4f92ff", "#7fd7ff", "#4f92ff"];
+      }
+
+      const brainrotClass = brainrotColors[state.selectedStat.name];
+      return animatedAccentPairs[brainrotClass] || ["#7fd7ff", "#4f92ff", "#7fd7ff", "#4f92ff"];
+    }
+
     function applySelectedAccent() {
       clearAccentClasses(els.calculateBtn);
       clearAccentClasses(els.finalStat);
@@ -1147,11 +1264,24 @@
       els.calculateBtn.style.color = darkTextAccents.has(accentClass) ? "#17130c" : "#f8fbff";
     }
 
+    function invalidateCalculatedResult() {
+      state.hasCalculated = false;
+    }
+
+    function updateControlLocking() {
+      const hasSelection = Boolean(state.selectedStat);
+      els.calculateBtn.disabled = !hasSelection;
+      els.levelDown.disabled = !hasSelection;
+      els.levelUp.disabled = !hasSelection;
+      els.levelValue.disabled = !hasSelection;
+    }
+
     function renderRanks() {
       els.rankSelector.innerHTML = "";
       const accentClass = state.selectedStat ? accentMap[brainrotColors[state.selectedStat.name]] : "";
       for (let i = 0; i <= 4; i += 1) {
         const button = document.createElement("button");
+        button.disabled = !state.selectedStat;
         button.textContent = String(i);
         if (state.rank === i) {
           button.classList.add("active");
@@ -1161,6 +1291,7 @@
         }
         button.addEventListener("click", () => {
           state.rank = i;
+          invalidateCalculatedResult();
           renderRanks();
           calculate();
         });
@@ -1175,9 +1306,15 @@
         const item = document.createElement("button");
         const isTrait = type === "trait";
         const isActive = state.selectedMutations.has(name);
+        const [color1, color2, color3, color4] = getSelectedAnimatedPair();
 
         item.className = `mutation animated-border-card${isTrait ? " trait-card" : ""}`;
+        item.disabled = !state.selectedStat;
         if (isActive) item.classList.add("active");
+        item.style.setProperty("--bonus-color-1", color1);
+        item.style.setProperty("--bonus-color-2", color2);
+        item.style.setProperty("--bonus-color-3", color3);
+        item.style.setProperty("--bonus-color-4", color4);
         item.innerHTML = `
           <span class="mutation-content">
             <span class="mutation-name">${name}</span>
@@ -1190,6 +1327,7 @@
           } else {
             state.selectedMutations.add(name);
           }
+          invalidateCalculatedResult();
           renderBonusGrid(els.traitsGrid, traits, "trait");
           renderBonusGrid(els.mutationsGrid, mutations, "mutation");
           calculate();
@@ -1201,7 +1339,9 @@
     function updateSearchResults(query) {
       const normalized = query.trim().toLowerCase();
       const matches = baseStats.filter((item) =>
-        item.name.toLowerCase().includes(normalized)
+        item.hiddenExact
+          ? normalized === item.name.toLowerCase()
+          : item.name.toLowerCase().includes(normalized)
       );
       els.results.innerHTML = "";
 
@@ -1217,10 +1357,11 @@
           const option = document.createElement("div");
           option.className = `search-option${match.unavailable ? " unavailable" : ""}`;
           const colorClass = brainrotColors[match.name] || "";
-          option.innerHTML = `<span class="brainrot-name ${colorClass}">${match.name}</span><span class="subtle">${match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`}</span>`;
-          if (!match.unavailable) {
+          option.innerHTML = `<span class="brainrot-name ${colorClass}">${match.name}</span><span class="subtle">${match.secretLabel || (match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`)}</span>`;
+          if (!match.unavailable || match.secretLabel) {
             option.addEventListener("click", () => {
               state.selectedStat = match;
+              state.hasCalculated = false;
               els.search.value = match.name;
               els.results.classList.remove("show");
               calculate();
@@ -1258,33 +1399,55 @@
         els.statusBadge.textContent = "Invalid";
         els.statusBadge.classList.remove("ready");
         applySelectedAccent();
+        updateSelectedBrainrotLabel();
+        updateControlLocking();
+        renderBonusGrid(els.traitsGrid, traits, "trait");
+        renderBonusGrid(els.mutationsGrid, mutations, "mutation");
+        renderRanks();
+        return;
+      }
+
+      els.baseStat.textContent = formatMoney(state.selectedStat.value);
+      els.selectedUnit.textContent = state.selectedStat.unit;
+      els.statusBadge.textContent = "Ready";
+      els.statusBadge.classList.add("ready");
+      applySelectedAccent();
+      updateSelectedBrainrotLabel();
+      updateControlLocking();
+      renderBonusGrid(els.traitsGrid, traits, "trait");
+      renderBonusGrid(els.mutationsGrid, mutations, "mutation");
+
+      if (!state.hasCalculated) {
+        els.finalStat.textContent = "—";
+        els.finalUnit.textContent = state.selectedStat.unit;
+        els.rankMultiplier.textContent = "—";
+        els.levelMultiplier.textContent = "—";
+        els.mutationMultiplier.textContent = "—";
+        els.formulaValue.textContent = "—";
         renderRanks();
         return;
       }
 
       const finalValue = state.selectedStat.value * rankMult * levelMult * mutationMult;
 
-      els.baseStat.textContent = formatMoney(state.selectedStat.value);
-      els.selectedUnit.textContent = state.selectedStat.unit;
       els.finalStat.textContent = formatMoney(finalValue);
       els.finalUnit.textContent = state.selectedStat.unit;
       els.rankMultiplier.textContent = `${rankMult.toFixed(2)}×`;
       els.levelMultiplier.textContent = `${levelMult.toFixed(2)}×`;
       els.mutationMultiplier.textContent = `${mutationMult.toFixed(2)}×`;
       els.formulaValue.textContent = `${formatMoney(finalValue)}`;
-      els.statusBadge.textContent = "Ready";
-      els.statusBadge.classList.add("ready");
-      applySelectedAccent();
       renderRanks();
     }
 
     document.getElementById("levelDown").addEventListener("click", () => {
       state.level = Math.max(1, state.level - 1);
+      invalidateCalculatedResult();
       calculate();
     });
 
     document.getElementById("levelUp").addEventListener("click", () => {
       state.level += 1;
+      invalidateCalculatedResult();
       calculate();
     });
 
@@ -1296,12 +1459,14 @@
       }
 
       state.level = Math.max(1, Number(rawValue));
+      invalidateCalculatedResult();
       calculate();
     });
 
     els.levelValue.addEventListener("blur", (event) => {
       if (!event.target.value.trim()) {
         state.level = 1;
+        invalidateCalculatedResult();
         calculate();
       }
     });
@@ -1309,6 +1474,7 @@
     els.search.addEventListener("input", (event) => {
       if (!event.target.value.trim()) {
         state.selectedStat = null;
+        state.hasCalculated = false;
         calculate();
       }
       updateSearchResults(event.target.value);
@@ -1317,11 +1483,18 @@
     els.clear.addEventListener("click", () => {
       els.search.value = "";
       state.selectedStat = null;
+      state.hasCalculated = false;
       els.results.classList.remove("show");
       calculate();
     });
 
-    els.calculateBtn.addEventListener("click", calculate);
+    els.calculateBtn.addEventListener("click", () => {
+      if (!state.selectedStat) {
+        return;
+      }
+      state.hasCalculated = true;
+      calculate();
+    });
 
     document.addEventListener("click", (event) => {
       if (!event.target.closest(".search-wrap")) {
