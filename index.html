@@ -254,6 +254,7 @@
     }
 
     .mutation {
+      position: relative;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -266,6 +267,16 @@
       color: #12203a;
       cursor: pointer;
       transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .mutation-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
     }
 
     .mutation:hover {
@@ -285,6 +296,59 @@
     .mutation-bonus {
       color: #5573a5;
       white-space: nowrap;
+    }
+
+    .trait-card::before,
+    .animated-border-card::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 20px;
+      padding: 3px;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          #111318 0 72px,
+          #ffffff 72px 144px,
+          #111318 144px 216px,
+          #ffffff 216px 288px
+        );
+      background-size: 500% 500%;
+      opacity: 0;
+      transition: opacity 180ms ease;
+      animation: traitFlow 6.2s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+    }
+
+    .trait-card.active,
+    .animated-border-card.active {
+      background: #ffffff;
+      border-color: rgba(25, 25, 31, 0.18);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .trait-card.active::before,
+    .animated-border-card.active::before {
+      opacity: 1;
+    }
+
+    @keyframes traitFlow {
+      0% {
+        background-position: 0% 0%;
+      }
+
+      100% {
+        background-position: 100% 100%;
+      }
     }
 
     .result-card {
@@ -338,6 +402,15 @@
       background: rgba(79, 146, 255, 0.12);
     }
 
+    .search-option.unavailable {
+      cursor: not-allowed;
+      color: #7f91b3;
+    }
+
+    .search-option.unavailable:hover {
+      background: transparent;
+    }
+
     .empty-state {
       padding: 12px 14px;
       color: var(--muted);
@@ -348,6 +421,16 @@
       .app {
         grid-template-columns: 1fr;
       }
+    }
+
+    .page-signature {
+      width: min(1220px, 100%);
+      margin: 12px auto 0;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
   </style>
 </head>
@@ -452,93 +535,96 @@
       </div>
     </aside>
   </main>
+  <div class="page-signature">W Vanga</div>
 
   <script>
     const baseStats = [
-      { name: "$ Tung Tung Sahur", value: 100, unit: "$ / Fish" },
-      { name: "$ Cappucino Assasino", value: 150, unit: "$ / Fish" },
-      { name: "$ Pipi Potato", value: 300, unit: "$ / Fish" },
-      { name: "$ Cappucina Ballerina", value: 450, unit: "$ / Fish" },
-      { name: "$ Salamino Penguino", value: 750, unit: "$ / Fish" },
-      { name: "$ Fluriflura", value: 937, unit: "$ / Fish" },
-      { name: "$ Tim Cheese", value: 1125, unit: "$ / Fish" },
-      { name: "$ Orangutini Anasasini", value: 1875, unit: "$ / Fish" },
-      { name: "$ Brr Brr Patapim", value: 3000, unit: "$ / Fish" },
-      { name: "$ Noo My Hotspot", value: 3500, unit: "$ / Fish" },
-      { name: "$ Udin Din Din Dun", value: 4500, unit: "$ / Fish" },
-      { name: "$ Pipi Kiwi", value: 5250, unit: "$ / Fish" },
-      { name: "$ Chef Crabracadabra", value: 9000, unit: "$ / Fish" },
-      { name: "$ Boneca Ambalabu", value: 12000, unit: "$ / Fish" },
-      { name: "$ Cacto Hipopotamo", value: 13500, unit: "$ / Fish" },
-      { name: "$ Capi Taco", value: 15000, unit: "$ / Fish" },
-      { name: "$ Sigma Boy", value: 18000, unit: "$ / Fish" },
-      { name: "$ Tukanno Banano", value: 32000, unit: "$ / Fish" },
-      { name: "$ Gorillo Watermelodrillo", value: 37500, unit: "$ / Fish" },
-      { name: "$ Tric Trac Barabum", value: 52500, unit: "$ / Fish" },
-      { name: "$ Avocadini Guffo", value: 63750, unit: "$ / Fish" },
-      { name: "$ Tacorita Tacorito", value: 100000, unit: "$ / Fish" },
-      { name: "$ Quivioli Ameleoni", value: 100000, unit: "$ / Fish" },
-      { name: "$ Friggo Camelo", value: 150000, unit: "$ / Fish" },
-      { name: "$ Glorbo Fruttodrillo", value: 187500, unit: "$ / Fish" },
-      { name: "$ Pakrahmatmamat", value: 225000, unit: "$ / Fish" },
-      { name: "$ Karkerkar Kurkur", value: 350000, unit: "$ / Fish" },
-      { name: "$ La Vacca Saturno Saturnita", value: 1000000, unit: "$ / Fish" },
-      { name: "$ Tic Tac Sahur", value: 1750000, unit: "$ / Fish" },
-      { name: "$ Pot Hotspot", value: 2250000, unit: "$ / Fish" },
-      { name: "$ Cocofanto Elefanto", value: 2375000, unit: "$ / Fish" },
-      { name: "$ Job Job Sahur", value: 2500000, unit: "$ / Fish" },
-      { name: "$ La Cucaracha", value: 2750000, unit: "$ / Fish" },
-      { name: "$ La Grande Combination", value: 3000000, unit: "$ / Fish" },
-      { name: "$ Cuadramat & Pak", value: 3750000, unit: "$ / Fish" },
-      { name: "$ Dul Dul Dul", value: 4500000, unit: "$ / Fish" },
-      { name: "$ Cavallo Virtuoso", value: 5000000, unit: "$ / Fish" },
-      { name: "$ Nuclearo Dinosauro", value: 5000000, unit: "$ / Fish" },
-      { name: "$ 67", value: 5500000, unit: "$ / Fish" },
-      { name: "$ Cupcake Koala", value: 6000000, unit: "$ / Fish" },
-      { name: "$ Esok Sekolah", value: 6500000, unit: "$ / Fish" },
-      { name: "$ Girafa Celestre", value: 8000000, unit: "$ / Fish" },
-      { name: "$ Chillin Chilli", value: 10000000, unit: "$ / Fish" },
-      { name: "$ Swag Soda", value: 12500000, unit: "$ / Fish" },
-      { name: "$ Matteo", value: 15000000, unit: "$ / Fish" },
-      { name: "$ Strawberelli Flamingelli", value: 15500000, unit: "$ / Fish" },
-      { name: "$ Ketupat Kepat", value: 16000000, unit: "$ / Fish" },
-      { name: "$ Skull Skull Skull", value: 18000000, unit: "$ / Fish" },
-      { name: "$ Tortuggini Dragonfruttini", value: 18500000, unit: "$ / Fish" },
-      { name: "$ Mangolini Parrocini", value: 20000000, unit: "$ / Fish" },
-      { name: "$ Cocosini Mama", value: 20000000, unit: "$ / Fish" },
-      { name: "$ Ganganzelli Trulala", value: 22500000, unit: "$ / Fish" },
-      { name: "$ Pipi Corni", value: 25000000, unit: "$ / Fish" },
-      { name: "$ Strawberry Elephant", value: 50000000, unit: "$ / Fish" },
-      { name: "$ Crystalini Ananassini", value: 55000000, unit: "$ / Fish" },
-      { name: "$ Meowl", value: 65000000, unit: "$ / Fish" },
-      { name: "$ Spiuniru Golubiru", value: 70000000, unit: "$ / Fish" },
-      { name: "$ Dragon Canneloni", value: 75000000, unit: "$ / Fish" },
-      { name: "$ Tigroligre Frutonni", value: 80000000, unit: "$ / Fish" },
-      { name: "$ Alessio", value: 80000000, unit: "$ / Fish" },
-      { name: "$ Bombini Gusini", value: 85000000, unit: "$ / Fish" },
-      { name: "$ Mariachi Skeletoni", value: 87500000, unit: "$ / Fish" },
-      { name: "$ Chicleteira Bicicleteira", value: 90000000, unit: "$ / Fish" },
-      { name: "$ Piccione Maccina", value: 92500000, unit: "$ / Fish" },
-      { name: "$ Crabbo Limonetta", value: 95000000, unit: "$ / Fish" },
-      { name: "$ Bandito Axolito", value: 110000000, unit: "$ / Fish" },
-      { name: "$ Stoppo Luminino", value: 120000000, unit: "$ / Fish" },
-      { name: "$ Money Money Man", value: 125000000, unit: "$ / Fish" },
-      { name: "$ Signore Carapace", value: 175000000, unit: "$ / Fish" },
-      { name: "$ Karloo", value: 225000000, unit: "$ / Fish" },
-      { name: "$ Mastodontico Telepedone", value: 325000000, unit: "$ / Fish" },
-      { name: "$ Pirulitoita Bicicleteira", value: 420000000, unit: "$ / Fish" },
-      { name: "$ Skeletoni Canneloni", value: 650000000, unit: "$ / Fish" },
-      { name: "$ Spaghetti Tualetti", value: 750000000, unit: "$ / Fish" },
-      { name: "$ Arcade Octo", value: 800000000, unit: "$ / Fish" },
-      { name: "$ Bananini Manini", value: 850000000, unit: "$ / Fish" },
-      { name: "$ Namini Meowini", value: 900000000, unit: "$ / Fish" },
-      { name: "$ Cerberus", value: 1200000000, unit: "$ / Fish" },
-      { name: "$ Hydra Canneloni", value: 1500000000, unit: "$ / Fish" },
-      { name: "$ Mr Chip", value: 2000000000, unit: "$ / Fish" },
-      { name: "$ Los Tralaleros", value: 2500000000, unit: "$ / Fish" },
-      { name: "$ Money Pug", value: 3000000000, unit: "$ / Fish" },
-      { name: "$ Tripi Tropa", value: 4000000000, unit: "$ / Fish" },
-      { name: "$ Cashy", value: 5000000000, unit: "$ / Fish" }
+      { name: "Tung Tung Sahur", value: 100, unit: "$ / Fish" },
+      { name: "Cappucino Assasino", value: 150, unit: "$ / Fish" },
+      { name: "Pipi Potato", value: 300, unit: "$ / Fish" },
+      { name: "Cappucina Ballerina", value: 450, unit: "$ / Fish" },
+      { name: "Salamino Penguino", value: 750, unit: "$ / Fish" },
+      { name: "Fluriflura", value: 937, unit: "$ / Fish" },
+      { name: "Tim Cheese", value: 1125, unit: "$ / Fish" },
+      { name: "Orangutini Anasasini", value: 1875, unit: "$ / Fish" },
+      { name: "Brr Brr Patapim", value: 3000, unit: "$ / Fish" },
+      { name: "Noo My Hotspot", value: 3500, unit: "$ / Fish" },
+      { name: "Udin Din Din Dun", value: 4500, unit: "$ / Fish" },
+      { name: "Pipi Kiwi", value: 5250, unit: "$ / Fish" },
+      { name: "Chef Crabracadabra", value: 9000, unit: "$ / Fish" },
+      { name: "Boneca Ambalabu", value: 12000, unit: "$ / Fish" },
+      { name: "Cacto Hipopotamo", value: 13500, unit: "$ / Fish" },
+      { name: "Capi Taco", value: 15000, unit: "$ / Fish" },
+      { name: "Sigma Boy", value: 18000, unit: "$ / Fish" },
+      { name: "Tukanno Banano", value: 32000, unit: "$ / Fish" },
+      { name: "Gorillo Watermelodrillo", value: 37500, unit: "$ / Fish" },
+      { name: "Tric Trac Barabum", value: 52500, unit: "$ / Fish" },
+      { name: "Avocadini Guffo", value: 63750, unit: "$ / Fish" },
+      { name: "Tacorita Tacorito", value: 100000, unit: "$ / Fish" },
+      { name: "Quivioli Ameleoni", value: 100000, unit: "$ / Fish" },
+      { name: "Friggo Camelo", value: 150000, unit: "$ / Fish" },
+      { name: "Glorbo Fruttodrillo", value: 187500, unit: "$ / Fish" },
+      { name: "Pakrahmatmamat", value: 225000, unit: "$ / Fish" },
+      { name: "Karkerkar Kurkur", value: 350000, unit: "$ / Fish" },
+      { name: "La Vacca Saturno Saturnita", value: 1000000, unit: "$ / Fish" },
+      { name: "Tic Tac Sahur", value: 1750000, unit: "$ / Fish" },
+      { name: "Pot Hotspot", value: 2250000, unit: "$ / Fish" },
+      { name: "Cocofanto Elefanto", value: 2375000, unit: "$ / Fish" },
+      { name: "Job Job Sahur", value: 2500000, unit: "$ / Fish" },
+      { name: "La Cucaracha", value: 2750000, unit: "$ / Fish" },
+      { name: "La Grande Combination", value: 3000000, unit: "$ / Fish" },
+      { name: "Cuadramat & Pak", value: 3750000, unit: "$ / Fish" },
+      { name: "Dul Dul Dul", value: 4500000, unit: "$ / Fish" },
+      { name: "Cavallo Virtuoso", value: 5000000, unit: "$ / Fish" },
+      { name: "Nuclearo Dinosauro", value: 5000000, unit: "$ / Fish" },
+      { name: "67", value: 5500000, unit: "$ / Fish" },
+      { name: "Cupcake Koala", value: 6000000, unit: "$ / Fish" },
+      { name: "Esok Sekolah", value: 6500000, unit: "$ / Fish" },
+      { name: "Girafa Celestre", value: 8000000, unit: "$ / Fish" },
+      { name: "Chillin Chilli", value: 10000000, unit: "$ / Fish" },
+      { name: "Swag Soda", value: 12500000, unit: "$ / Fish" },
+      { name: "Matteo", value: 15000000, unit: "$ / Fish" },
+      { name: "Strawberelli Flamingelli", value: 15500000, unit: "$ / Fish" },
+      { name: "Ketupat Kepat", value: 16000000, unit: "$ / Fish" },
+      { name: "Skull Skull Skull", value: 18000000, unit: "$ / Fish" },
+      { name: "Tortuggini Dragonfruttini", value: 18500000, unit: "$ / Fish" },
+      { name: "Mangolini Parrocini", value: 20000000, unit: "$ / Fish" },
+      { name: "Cocosini Mama", value: 20000000, unit: "$ / Fish" },
+      { name: "Ganganzelli Trulala", value: 22500000, unit: "$ / Fish" },
+      { name: "Pipi Corni", value: 25000000, unit: "$ / Fish" },
+      { name: "Strawberry Elephant", value: 50000000, unit: "$ / Fish" },
+      { name: "Crystalini Ananassini", value: 55000000, unit: "$ / Fish" },
+      { name: "Meowl", value: 65000000, unit: "$ / Fish" },
+      { name: "Spiuniru Golubiru", value: 70000000, unit: "$ / Fish" },
+      { name: "Dragon Canneloni", value: 75000000, unit: "$ / Fish" },
+      { name: "Tigroligre Frutonni", value: 80000000, unit: "$ / Fish" },
+      { name: "Alessio", value: 80000000, unit: "$ / Fish" },
+      { name: "Bombini Gusini", value: 85000000, unit: "$ / Fish" },
+      { name: "Mariachi Skeletoni", value: 87500000, unit: "$ / Fish" },
+      { name: "Chicleteira Bicicleteira", value: 90000000, unit: "$ / Fish" },
+      { name: "Piccione Maccina", value: 92500000, unit: "$ / Fish" },
+      { name: "Crabbo Limonetta", value: 95000000, unit: "$ / Fish" },
+      { name: "Bandito Axolito", value: 110000000, unit: "$ / Fish" },
+      { name: "Stoppo Luminino", value: 120000000, unit: "$ / Fish" },
+      { name: "Money Money Man", value: 125000000, unit: "$ / Fish" },
+      { name: "Signore Carapace", value: 175000000, unit: "$ / Fish" },
+      { name: "Karloo", value: 225000000, unit: "$ / Fish" },
+      { name: "Mastodontico Telepedone", value: 325000000, unit: "$ / Fish" },
+      { name: "Pirulitoita Bicicleteira", value: 420000000, unit: "$ / Fish" },
+      { name: "Skeletoni Canneloni", value: 650000000, unit: "$ / Fish" },
+      { name: "Spaghetti Tualetti", value: 750000000, unit: "$ / Fish" },
+      { name: "Arcade Octo", value: 800000000, unit: "$ / Fish" },
+      { name: "Bananini Manini", value: 850000000, unit: "$ / Fish" },
+      { name: "Namini Meowini", value: 900000000, unit: "$ / Fish" },
+      { name: "Cerberus", value: 1200000000, unit: "$ / Fish" },
+      { name: "Hydra Canneloni", value: 1500000000, unit: "$ / Fish" },
+      { name: "Mr Chip", value: 2000000000, unit: "$ / Fish" },
+      { name: "Los Tralaleros", value: 2500000000, unit: "$ / Fish" },
+      { name: "Money Pug", value: 3000000000, unit: "$ / Fish" },
+      { name: "Tripi Tropa", value: 4000000000, unit: "$ / Fish" },
+      { name: "Cashy", value: 5000000000, unit: "$ / Fish" },
+      { name: "Rico Dinero", value: null, unit: "Unavailable", unavailable: true },
+      { name: "Arca Dragon", value: null, unit: "Unavailable", unavailable: true }
     ];
 
     const traits = [
@@ -620,15 +706,21 @@
       }
     }
 
-    function renderBonusGrid(container, items) {
+    function renderBonusGrid(container, items, type) {
       container.innerHTML = "";
+
       for (const [name, bonus] of items) {
         const item = document.createElement("button");
-        item.className = "mutation";
-        if (state.selectedMutations.has(name)) item.classList.add("active");
+        const isTrait = type === "trait";
+        const isActive = state.selectedMutations.has(name);
+
+        item.className = `mutation animated-border-card${isTrait ? " trait-card" : ""}`;
+        if (isActive) item.classList.add("active");
         item.innerHTML = `
-          <span class="mutation-name">${name}</span>
-          <span class="mutation-bonus">+${bonus}%</span>
+          <span class="mutation-content">
+            <span class="mutation-name">${name}</span>
+            <span class="mutation-bonus">+${bonus}%</span>
+          </span>
         `;
         item.addEventListener("click", () => {
           if (state.selectedMutations.has(name)) {
@@ -636,8 +728,8 @@
           } else {
             state.selectedMutations.add(name);
           }
-          renderBonusGrid(els.traitsGrid, traits);
-          renderBonusGrid(els.mutationsGrid, mutations);
+          renderBonusGrid(els.traitsGrid, traits, "trait");
+          renderBonusGrid(els.mutationsGrid, mutations, "mutation");
           calculate();
         });
         container.appendChild(item);
@@ -647,8 +739,7 @@
     function updateSearchResults(query) {
       const normalized = query.trim().toLowerCase();
       const matches = baseStats.filter((item) =>
-        item.name.toLowerCase().includes(normalized) ||
-        item.name.replace("$ ", "").toLowerCase().includes(normalized)
+        item.name.toLowerCase().includes(normalized)
       );
       els.results.innerHTML = "";
 
@@ -662,14 +753,16 @@
       } else {
         for (const match of matches) {
           const option = document.createElement("div");
-          option.className = "search-option";
-          option.innerHTML = `<span>${match.name}</span><span class="subtle">${match.value} ${match.unit}</span>`;
-          option.addEventListener("click", () => {
-            state.selectedStat = match;
-            els.search.value = match.name;
-            els.results.classList.remove("show");
-            calculate();
-          });
+          option.className = `search-option${match.unavailable ? " unavailable" : ""}`;
+          option.innerHTML = `<span>${match.name}</span><span class="subtle">${match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`}</span>`;
+          if (!match.unavailable) {
+            option.addEventListener("click", () => {
+              state.selectedStat = match;
+              els.search.value = match.name;
+              els.results.classList.remove("show");
+              calculate();
+            });
+          }
           els.results.appendChild(option);
         }
       }
@@ -769,8 +862,8 @@
     });
 
     renderRanks();
-    renderBonusGrid(els.traitsGrid, traits);
-    renderBonusGrid(els.mutationsGrid, mutations);
+    renderBonusGrid(els.traitsGrid, traits, "trait");
+    renderBonusGrid(els.mutationsGrid, mutations, "mutation");
     calculate();
   </script>
 </body>
