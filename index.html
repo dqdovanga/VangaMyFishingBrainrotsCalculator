@@ -476,10 +476,10 @@
       background:
         repeating-linear-gradient(
           135deg,
-          var(--bonus-color-1, #7fd7ff) 0 72px,
-          var(--bonus-color-2, #4f92ff) 72px 144px,
-          var(--bonus-color-3, var(--bonus-color-1, #7fd7ff)) 144px 216px,
-          var(--bonus-color-4, var(--bonus-color-2, #4f92ff)) 216px 288px
+          var(--bonus-color-1, #7fd7ff) 0 var(--bonus-step, 72px),
+          var(--bonus-color-2, #4f92ff) var(--bonus-step, 72px) calc(var(--bonus-step, 72px) * 2),
+          var(--bonus-color-3, var(--bonus-color-1, #7fd7ff)) calc(var(--bonus-step, 72px) * 2) calc(var(--bonus-step, 72px) * 3),
+          var(--bonus-color-4, var(--bonus-color-2, #4f92ff)) calc(var(--bonus-step, 72px) * 3) calc(var(--bonus-step, 72px) * 4)
         );
       background-size: 500% 500%;
       opacity: 0;
@@ -1149,7 +1149,8 @@
       { name: "Chanchan", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Willi", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Ace", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
-      { name: "Harsh7", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
+      { name: "Harsh", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
+      { name: "Resh", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Vanga", value: 1000000000000000, unit: "$ / Fish", secretLabel: "G.O.A.T", hiddenExact: true }
     ];
 
@@ -1279,7 +1280,8 @@
       "Chanchan": "brainrot-top-secret",
       "Willi": "brainrot-top-secret",
       "Ace": "brainrot-gray",
-      "Harsh7": "brainrot-top-secret",
+      "Harsh": "brainrot-top-secret",
+      "Resh": "brainrot-top-secret",
       "Vanga": "brainrot-vanga"
     };
 
@@ -1366,6 +1368,11 @@
     };
 
     function formatMoney(value) {
+      if (value >= 1000000000000000) {
+        const quadrillions = value / 1000000000000000;
+        return `${Number(quadrillions.toFixed(quadrillions >= 10 ? 0 : 2)).toString()}QA`;
+      }
+
       if (value >= 1000000000000) {
         const trillions = value / 1000000000000;
         return `${Number(trillions.toFixed(trillions >= 10 ? 0 : 2)).toString()}T`;
@@ -1512,6 +1519,19 @@
       return animatedAccentPairs[brainrotClass] || ["#7fd7ff", "#4f92ff", "#7fd7ff", "#4f92ff"];
     }
 
+    function getSelectedBonusStripeSize() {
+      if (!state.selectedStat) {
+        return "72px";
+      }
+
+      const brainrotClass = brainrotColors[state.selectedStat.name];
+      if (brainrotClass === "brainrot-wave-rainbow" || brainrotClass === "brainrot-rainbow") {
+        return "42px";
+      }
+
+      return "72px";
+    }
+
     function applySelectedAccent() {
       clearAccentClasses(els.calculateBtn);
       clearAccentClasses(els.baseStat);
@@ -1625,6 +1645,7 @@
         item.style.setProperty("--bonus-color-2", color2);
         item.style.setProperty("--bonus-color-3", color3);
         item.style.setProperty("--bonus-color-4", color4);
+        item.style.setProperty("--bonus-step", getSelectedBonusStripeSize());
         item.innerHTML = `
           <span class="mutation-content">
             <span class="mutation-name">${name}</span>
@@ -1632,10 +1653,20 @@
           </span>
         `;
         item.addEventListener("click", () => {
-          if (state.selectedMutations.has(name)) {
-            state.selectedMutations.delete(name);
+          if (isTrait) {
+            if (state.selectedMutations.has(name)) {
+              state.selectedMutations.delete(name);
+            } else {
+              state.selectedMutations.add(name);
+            }
           } else {
-            state.selectedMutations.add(name);
+            for (const [mutationName] of mutations) {
+              state.selectedMutations.delete(mutationName);
+            }
+
+            if (!isActive) {
+              state.selectedMutations.add(name);
+            }
           }
           invalidateCalculatedResult();
           renderBonusGrid(els.traitsGrid, traits, "trait");
