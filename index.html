@@ -200,6 +200,80 @@
       background: linear-gradient(180deg, var(--blue), var(--blue-strong));
     }
 
+    .segmented button.accent-gray.active {
+      background: linear-gradient(180deg, #8993a5, #6f7889);
+    }
+
+    .segmented button.accent-green.active {
+      background: linear-gradient(180deg, #83ec99, #54bf6b);
+    }
+
+    .segmented button.accent-light-blue.active {
+      background: linear-gradient(180deg, #98dcff, #63b8f4);
+    }
+
+    .segmented button.accent-purple.active {
+      background: linear-gradient(180deg, #c59dff, #8f64e6);
+    }
+
+    .segmented button.accent-light-yellow.active {
+      background: linear-gradient(180deg, #ffe881, #e8b93e);
+      color: #1d1a0d;
+    }
+
+    .segmented button.accent-red.active {
+      background: linear-gradient(180deg, #ff8d8d, #d55454);
+    }
+
+    .segmented button.accent-dark-pink.active {
+      background: linear-gradient(180deg, #efabd2, #c86f9f);
+    }
+
+    .segmented button.accent-wave-gray.active {
+      background: linear-gradient(120deg, #d8dbe1, #6a707a, #181b20, #d8dbe1);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .segmented button.accent-yellow-orange.active {
+      background: linear-gradient(180deg, #ffef7e, #ffb853, #ff8f36);
+      color: #231807;
+    }
+
+    .segmented button.accent-white-black-mid.active {
+      background: linear-gradient(120deg, #ffffff, #d7d7d7, #111111, #ffffff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .segmented button.accent-wave-rainbow.active {
+      background: linear-gradient(120deg, #94ddff, #4f92ff, #9b6dff, #f58fd6, #94ddff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .segmented button.accent-wave-black-white.active {
+      background: linear-gradient(120deg, #ffffff, #c8ccd4, #0f1117, #ffffff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .segmented button.accent-wave-sun.active {
+      background: linear-gradient(180deg, #ffef7e, #ffc85e, #ff9937);
+      color: #231807;
+    }
+
+    .segmented button.accent-wave-ocean.active {
+      background: linear-gradient(180deg, #c7f6ff, #6cc3ff, #16358f);
+    }
+
+    .segmented button.accent-rainbow.active {
+      background: linear-gradient(120deg, #ff7b7b, #ffba66, #fff06e, #82ef9f, #7fd7ff, #a88dff, #ff8ddb);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+      color: #17130c;
+    }
+
     .level-row {
       display: grid;
       grid-template-columns: 44px 1fr 44px;
@@ -245,6 +319,7 @@
       background: linear-gradient(180deg, var(--blue), var(--blue-strong));
       font-weight: 700;
       margin-top: 10px;
+      transition: background 180ms ease, box-shadow 180ms ease, color 180ms ease;
     }
 
     .mutations-grid {
@@ -371,6 +446,157 @@
       letter-spacing: -0.02em;
     }
 
+    .stat-accent {
+      transition: color 180ms ease, background-image 180ms ease;
+    }
+
+    .accent-gray {
+      color: #a9b2c3;
+    }
+
+    .accent-green {
+      color: #76e58d;
+    }
+
+    .accent-light-blue {
+      color: #86cfff;
+    }
+
+    .accent-purple {
+      color: #b68cff;
+    }
+
+    .accent-light-yellow {
+      color: #ffe679;
+    }
+
+    .accent-red {
+      color: #ff7a7a;
+    }
+
+    .accent-dark-pink {
+      color: #e08bc2;
+    }
+
+    .accent-wave-gray,
+    .accent-yellow-orange,
+    .accent-white-black-mid,
+    .accent-wave-rainbow,
+    .accent-wave-black-white,
+    .accent-wave-sun,
+    .accent-wave-ocean,
+    .accent-rainbow {
+      background-size: 220% 220%;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: brainrotWave 4.8s linear infinite;
+    }
+
+    .accent-wave-gray {
+      background-image: linear-gradient(120deg, #0f1117 0%, #666b74 35%, #d6d9df 50%, #555a63 70%, #0f1117 100%);
+    }
+
+    .accent-yellow-orange {
+      background-image: linear-gradient(180deg, #ffef7e 0%, #ffc85e 45%, #ff9937 100%);
+    }
+
+    .accent-white-black-mid {
+      background-image: linear-gradient(90deg, #ffffff 0%, #e7e7e7 35%, #111111 50%, #ebebeb 65%, #ffffff 100%);
+    }
+
+    .accent-wave-rainbow {
+      background-image: linear-gradient(120deg, #94ddff 0%, #4f92ff 25%, #9b6dff 50%, #f58fd6 75%, #94ddff 100%);
+    }
+
+    .accent-wave-black-white {
+      background-image: linear-gradient(120deg, #ffffff 0%, #d7d7d7 25%, #0f1117 50%, #c8ccd4 75%, #ffffff 100%);
+    }
+
+    .accent-wave-sun {
+      background-image: linear-gradient(180deg, #ffef7e 0%, #ffc85e 45%, #ff9937 100%);
+    }
+
+    .accent-wave-ocean {
+      background-image: linear-gradient(180deg, #c7f6ff 0%, #6cc3ff 38%, #16358f 100%);
+    }
+
+    .accent-rainbow {
+      background-image: linear-gradient(120deg, #ff7b7b 0%, #ffba66 18%, #fff06e 36%, #82ef9f 54%, #7fd7ff 72%, #a88dff 86%, #ff8ddb 100%);
+    }
+
+    .action-btn.accent-gray {
+      background: linear-gradient(180deg, #8993a5, #6f7889);
+    }
+
+    .action-btn.accent-green {
+      background: linear-gradient(180deg, #83ec99, #54bf6b);
+    }
+
+    .action-btn.accent-light-blue {
+      background: linear-gradient(180deg, #98dcff, #63b8f4);
+    }
+
+    .action-btn.accent-purple {
+      background: linear-gradient(180deg, #c59dff, #8f64e6);
+    }
+
+    .action-btn.accent-light-yellow {
+      background: linear-gradient(180deg, #ffe881, #e8b93e);
+      color: #1d1a0d;
+    }
+
+    .action-btn.accent-red {
+      background: linear-gradient(180deg, #ff8d8d, #d55454);
+    }
+
+    .action-btn.accent-dark-pink {
+      background: linear-gradient(180deg, #efabd2, #c86f9f);
+    }
+
+    .action-btn.accent-wave-gray {
+      background: linear-gradient(120deg, #d8dbe1, #6a707a, #181b20, #d8dbe1);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .action-btn.accent-yellow-orange {
+      background: linear-gradient(180deg, #ffef7e, #ffb853, #ff8f36);
+    }
+
+    .action-btn.accent-white-black-mid {
+      background: linear-gradient(120deg, #ffffff, #d7d7d7, #111111, #ffffff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .action-btn.accent-wave-rainbow {
+      background: linear-gradient(120deg, #94ddff, #4f92ff, #9b6dff, #f58fd6, #94ddff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .action-btn.accent-wave-black-white {
+      background: linear-gradient(120deg, #ffffff, #c8ccd4, #0f1117, #ffffff);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
+    .action-btn.accent-wave-sun {
+      background: linear-gradient(180deg, #ffef7e, #ffc85e, #ff9937);
+      color: #231807;
+    }
+
+    .action-btn.accent-wave-ocean {
+      background: linear-gradient(180deg, #c7f6ff, #6cc3ff, #16358f);
+    }
+
+    .action-btn.accent-rainbow {
+      background: linear-gradient(120deg, #ff7b7b, #ffba66, #fff06e, #82ef9f, #7fd7ff, #a88dff, #ff8ddb);
+      background-size: 220% 220%;
+      animation: brainrotWave 6.2s linear infinite;
+    }
+
     .search-results {
       position: absolute;
       top: calc(100% + 6px);
@@ -409,6 +635,95 @@
 
     .search-option.unavailable:hover {
       background: transparent;
+    }
+
+    .brainrot-name {
+      font-weight: 700;
+    }
+
+    .brainrot-gray {
+      color: #a9b2c3;
+    }
+
+    .brainrot-green {
+      color: #76e58d;
+    }
+
+    .brainrot-light-blue {
+      color: #86cfff;
+    }
+
+    .brainrot-purple {
+      color: #b68cff;
+    }
+
+    .brainrot-light-yellow {
+      color: #ffe679;
+    }
+
+    .brainrot-red {
+      color: #ff7a7a;
+    }
+
+    .brainrot-dark-pink {
+      color: #e08bc2;
+    }
+
+    .brainrot-wave-gray,
+    .brainrot-yellow-orange,
+    .brainrot-white-black-mid,
+    .brainrot-wave-rainbow,
+    .brainrot-wave-black-white,
+    .brainrot-wave-sun,
+    .brainrot-wave-ocean,
+    .brainrot-rainbow {
+      background-size: 220% 220%;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: brainrotWave 4.8s linear infinite;
+    }
+
+    .brainrot-wave-gray {
+      background-image: linear-gradient(120deg, #0f1117 0%, #666b74 35%, #d6d9df 50%, #555a63 70%, #0f1117 100%);
+    }
+
+    .brainrot-yellow-orange {
+      background-image: linear-gradient(180deg, #ffe86f 0%, #ffd84e 45%, #ffb347 100%);
+    }
+
+    .brainrot-white-black-mid {
+      background-image: linear-gradient(90deg, #ffffff 0%, #e7e7e7 35%, #111111 50%, #ebebeb 65%, #ffffff 100%);
+    }
+
+    .brainrot-wave-rainbow {
+      background-image: linear-gradient(120deg, #94ddff 0%, #4f92ff 25%, #9b6dff 50%, #f58fd6 75%, #94ddff 100%);
+    }
+
+    .brainrot-wave-black-white {
+      background-image: linear-gradient(120deg, #ffffff 0%, #d7d7d7 25%, #0f1117 50%, #c8ccd4 75%, #ffffff 100%);
+    }
+
+    .brainrot-wave-sun {
+      background-image: linear-gradient(180deg, #ffef7e 0%, #ffc85e 45%, #ff9937 100%);
+    }
+
+    .brainrot-wave-ocean {
+      background-image: linear-gradient(180deg, #c7f6ff 0%, #6cc3ff 38%, #16358f 100%);
+    }
+
+    .brainrot-rainbow {
+      background-image: linear-gradient(120deg, #ff7b7b 0%, #ffba66 18%, #fff06e 36%, #82ef9f 54%, #7fd7ff 72%, #a88dff 86%, #ff8ddb 100%);
+    }
+
+    @keyframes brainrotWave {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 200% 50%;
+      }
     }
 
     .empty-state {
@@ -506,8 +821,8 @@
     <aside class="panel">
       <div class="card result-card">
         <div class="subtle">Final Stat</div>
-        <div class="stat-main" id="finalStat">—</div>
-        <div class="subtle" id="finalUnit">$ / Fish</div>
+        <div class="stat-main stat-accent" id="finalStat">—</div>
+        <div class="subtle stat-accent" id="finalUnit">$ / Fish</div>
       </div>
 
       <div class="divider"></div>
@@ -642,6 +957,120 @@
       ["Giant", 200]
     ];
 
+    const brainrotColors = {
+      "Tung Tung Sahur": "brainrot-gray",
+      "Cappucino Assasino": "brainrot-gray",
+      "Pipi Potato": "brainrot-green",
+      "Cappucina Ballerina": "brainrot-green",
+      "Salamino Penguino": "brainrot-light-blue",
+      "Fluriflura": "brainrot-light-blue",
+      "Tim Cheese": "brainrot-light-blue",
+      "Orangutini Anasasini": "brainrot-purple",
+      "Brr Brr Patapim": "brainrot-purple",
+      "Noo My Hotspot": "brainrot-purple",
+      "Udin Din Din Dun": "brainrot-purple",
+      "Pipi Kiwi": "brainrot-purple",
+      "Chef Crabracadabra": "brainrot-light-yellow",
+      "Boneca Ambalabu": "brainrot-light-yellow",
+      "Cacto Hipopotamo": "brainrot-light-yellow",
+      "Capi Taco": "brainrot-light-yellow",
+      "Sigma Boy": "brainrot-light-yellow",
+      "Tukanno Banano": "brainrot-light-yellow",
+      "Gorillo Watermelodrillo": "brainrot-red",
+      "Tric Trac Barabum": "brainrot-red",
+      "Avocadini Guffo": "brainrot-red",
+      "Tacorita Tacorito": "brainrot-red",
+      "Quivioli Ameleoni": "brainrot-red",
+      "Friggo Camelo": "brainrot-red",
+      "Glorbo Fruttodrillo": "brainrot-red",
+      "Pakrahmatmamat": "brainrot-red",
+      "Karkerkar Kurkur": "brainrot-red",
+      "La Vacca Saturno Saturnita": "brainrot-wave-gray",
+      "Tic Tac Sahur": "brainrot-wave-gray",
+      "Pot Hotspot": "brainrot-wave-gray",
+      "Cocofanto Elefanto": "brainrot-wave-gray",
+      "Job Job Sahur": "brainrot-wave-gray",
+      "La Cucaracha": "brainrot-wave-gray",
+      "La Grande Combination": "brainrot-wave-gray",
+      "Cuadramat & Pak": "brainrot-wave-gray",
+      "Dul Dul Dul": "brainrot-wave-gray",
+      "Cavallo Virtuoso": "brainrot-wave-gray",
+      "Nuclearo Dinosauro": "brainrot-yellow-orange",
+      "67": "brainrot-yellow-orange",
+      "Cupcake Koala": "brainrot-yellow-orange",
+      "Esok Sekolah": "brainrot-yellow-orange",
+      "Girafa Celestre": "brainrot-yellow-orange",
+      "Chillin Chilli": "brainrot-yellow-orange",
+      "Swag Soda": "brainrot-yellow-orange",
+      "Matteo": "brainrot-yellow-orange",
+      "Strawberelli Flamingelli": "brainrot-yellow-orange",
+      "Ketupat Kepat": "brainrot-yellow-orange",
+      "Skull Skull Skull": "brainrot-yellow-orange",
+      "Tortuggini Dragonfruttini": "brainrot-yellow-orange",
+      "Mangolini Parrocini": "brainrot-yellow-orange",
+      "Cocosini Mama": "brainrot-yellow-orange",
+      "Pipi Corni": "brainrot-yellow-orange",
+      "Ganganzelli Trulala": "brainrot-white-black-mid",
+      "Strawberry Elephant": "brainrot-white-black-mid",
+      "Crystalini Ananassini": "brainrot-white-black-mid",
+      "Meowl": "brainrot-white-black-mid",
+      "Spiuniru Golubiru": "brainrot-white-black-mid",
+      "Tigroligre Frutonni": "brainrot-white-black-mid",
+      "Dragon Canneloni": "brainrot-dark-pink",
+      "Alessio": "brainrot-dark-pink",
+      "Bombini Gusini": "brainrot-dark-pink",
+      "Mariachi Skeletoni": "brainrot-dark-pink",
+      "Chicleteira Bicicleteira": "brainrot-dark-pink",
+      "Piccione Maccina": "brainrot-dark-pink",
+      "Crabbo Limonetta": "brainrot-dark-pink",
+      "Bandito Axolito": "brainrot-dark-pink",
+      "Stoppo Luminino": "brainrot-dark-pink",
+      "Money Money Man": "brainrot-wave-rainbow",
+      "Signore Carapace": "brainrot-wave-rainbow",
+      "Karloo": "brainrot-wave-rainbow",
+      "Mastodontico Telepedone": "brainrot-wave-rainbow",
+      "Pirulitoita Bicicleteira": "brainrot-wave-rainbow",
+      "Skeletoni Canneloni": "brainrot-wave-black-white",
+      "Spaghetti Tualetti": "brainrot-wave-black-white",
+      "Arcade Octo": "brainrot-wave-black-white",
+      "Bananini Manini": "brainrot-wave-black-white",
+      "Namini Meowini": "brainrot-wave-black-white",
+      "Cerberus": "brainrot-wave-sun",
+      "Hydra Canneloni": "brainrot-wave-sun",
+      "Mr Chip": "brainrot-wave-sun",
+      "Los Tralaleros": "brainrot-wave-sun",
+      "Money Pug": "brainrot-wave-ocean",
+      "Tripi Tropa": "brainrot-wave-ocean",
+      "Cashy": "brainrot-wave-ocean",
+      "Rico Dinero": "brainrot-rainbow",
+      "Arca Dragon": "brainrot-rainbow"
+    };
+
+    const accentMap = {
+      "brainrot-gray": "accent-gray",
+      "brainrot-green": "accent-green",
+      "brainrot-light-blue": "accent-light-blue",
+      "brainrot-purple": "accent-purple",
+      "brainrot-light-yellow": "accent-light-yellow",
+      "brainrot-red": "accent-red",
+      "brainrot-dark-pink": "accent-dark-pink",
+      "brainrot-wave-gray": "accent-wave-gray",
+      "brainrot-yellow-orange": "accent-yellow-orange",
+      "brainrot-white-black-mid": "accent-white-black-mid",
+      "brainrot-wave-rainbow": "accent-wave-rainbow",
+      "brainrot-wave-black-white": "accent-wave-black-white",
+      "brainrot-wave-sun": "accent-wave-sun",
+      "brainrot-wave-ocean": "accent-wave-ocean",
+      "brainrot-rainbow": "accent-rainbow"
+    };
+
+    const darkTextAccents = new Set([
+      "accent-light-yellow",
+      "accent-yellow-orange",
+      "accent-wave-sun",
+      "accent-rainbow"
+    ]);
+
     const state = {
       selectedStat: null,
       rank: 0,
@@ -691,12 +1120,45 @@
       }).format(value);
     }
 
+    function clearAccentClasses(element) {
+      for (const className of Object.values(accentMap)) {
+        element.classList.remove(className);
+      }
+    }
+
+    function applySelectedAccent() {
+      clearAccentClasses(els.calculateBtn);
+      clearAccentClasses(els.finalStat);
+      clearAccentClasses(els.finalUnit);
+      els.calculateBtn.style.color = "";
+
+      if (!state.selectedStat) {
+        return;
+      }
+
+      const accentClass = accentMap[brainrotColors[state.selectedStat.name]];
+      if (!accentClass) {
+        return;
+      }
+
+      els.calculateBtn.classList.add(accentClass);
+      els.finalStat.classList.add(accentClass);
+      els.finalUnit.classList.add(accentClass);
+      els.calculateBtn.style.color = darkTextAccents.has(accentClass) ? "#17130c" : "#f8fbff";
+    }
+
     function renderRanks() {
       els.rankSelector.innerHTML = "";
+      const accentClass = state.selectedStat ? accentMap[brainrotColors[state.selectedStat.name]] : "";
       for (let i = 0; i <= 4; i += 1) {
         const button = document.createElement("button");
         button.textContent = String(i);
-        if (state.rank === i) button.classList.add("active");
+        if (state.rank === i) {
+          button.classList.add("active");
+          if (accentClass) {
+            button.classList.add(accentClass);
+          }
+        }
         button.addEventListener("click", () => {
           state.rank = i;
           renderRanks();
@@ -754,7 +1216,8 @@
         for (const match of matches) {
           const option = document.createElement("div");
           option.className = `search-option${match.unavailable ? " unavailable" : ""}`;
-          option.innerHTML = `<span>${match.name}</span><span class="subtle">${match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`}</span>`;
+          const colorClass = brainrotColors[match.name] || "";
+          option.innerHTML = `<span class="brainrot-name ${colorClass}">${match.name}</span><span class="subtle">${match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`}</span>`;
           if (!match.unavailable) {
             option.addEventListener("click", () => {
               state.selectedStat = match;
@@ -787,12 +1250,15 @@
       if (!state.selectedStat) {
         els.baseStat.textContent = "—";
         els.finalStat.textContent = "—";
+        els.finalUnit.textContent = "$ / Fish";
         els.rankMultiplier.textContent = "—";
         els.levelMultiplier.textContent = "—";
         els.mutationMultiplier.textContent = "—";
         els.formulaValue.textContent = "—";
         els.statusBadge.textContent = "Invalid";
         els.statusBadge.classList.remove("ready");
+        applySelectedAccent();
+        renderRanks();
         return;
       }
 
@@ -808,6 +1274,8 @@
       els.formulaValue.textContent = `${formatMoney(finalValue)}`;
       els.statusBadge.textContent = "Ready";
       els.statusBadge.classList.add("ready");
+      applySelectedAccent();
+      renderRanks();
     }
 
     document.getElementById("levelDown").addEventListener("click", () => {
