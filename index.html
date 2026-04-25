@@ -107,6 +107,33 @@
       position: relative;
     }
 
+    .search-tools {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .search-tools label {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .search-size-select {
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(12, 19, 31, 0.8);
+      color: var(--text);
+      padding: 0 10px;
+      font: inherit;
+      font-size: 12px;
+      outline: none;
+    }
+
     .selected-brainrot-label {
       position: absolute;
       left: 14px;
@@ -165,6 +192,14 @@
       background: transparent;
       color: var(--muted);
       cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .search-wrap.open .clear-search {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .card {
@@ -672,10 +707,40 @@
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
       display: none;
       z-index: 5;
+      overflow-y: auto;
+      max-height: 360px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(127, 170, 245, 0.55) rgba(18, 31, 52, 0.65);
     }
 
     .search-results.show {
       display: block;
+    }
+
+    .search-results.size-small {
+      max-height: 240px;
+    }
+
+    .search-results.size-medium {
+      max-height: 360px;
+    }
+
+    .search-results.size-large {
+      max-height: 520px;
+    }
+
+    .search-results::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .search-results::-webkit-scrollbar-track {
+      background: rgba(18, 31, 52, 0.65);
+    }
+
+    .search-results::-webkit-scrollbar-thumb {
+      background: rgba(127, 170, 245, 0.55);
+      border-radius: 999px;
+      border: 2px solid rgba(18, 31, 52, 0.65);
     }
 
     .search-option {
@@ -698,6 +763,20 @@
 
     .search-option.unavailable:hover {
       background: transparent;
+    }
+
+    .search-rarity-block + .search-rarity-block {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(154, 177, 214, 0.14);
+    }
+
+    .search-rarity-label {
+      padding: 2px 14px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
 
     .brainrot-name {
@@ -876,6 +955,14 @@
 
       <div class="field">
         <label class="label" for="brainrotSearch">Brainrot</label>
+        <div class="search-tools">
+          <label for="searchSizeSelect">List size</label>
+          <select class="search-size-select" id="searchSizeSelect">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
         <div class="search-wrap">
           <input id="brainrotSearch" class="search-input" type="text" placeholder="Search brainrot..." autocomplete="off">
           <div class="selected-brainrot-label brainrot-name" id="selectedBrainrotLabel"></div>
@@ -1216,6 +1303,26 @@
       "brainrot-top-secret": "accent-red"
     };
 
+    const rarityMeta = {
+      "brainrot-gray": { order: 1, label: "Common", className: "brainrot-gray" },
+      "brainrot-green": { order: 2, label: "Uncommon", className: "brainrot-green" },
+      "brainrot-light-blue": { order: 3, label: "Rare", className: "brainrot-light-blue" },
+      "brainrot-purple": { order: 4, label: "Epic", className: "brainrot-purple" },
+      "brainrot-light-yellow": { order: 5, label: "Legendary", className: "brainrot-light-yellow" },
+      "brainrot-red": { order: 6, label: "Mythic", className: "brainrot-red" },
+      "brainrot-wave-gray": { order: 7, label: "Brainrot God", className: "brainrot-wave-gray" },
+      "brainrot-yellow-orange": { order: 8, label: "Ascended", className: "brainrot-yellow-orange" },
+      "brainrot-white-black-mid": { order: 9, label: "Ethereal", className: "brainrot-white-black-mid" },
+      "brainrot-dark-pink": { order: 10, label: "Celestial", className: "brainrot-dark-pink" },
+      "brainrot-wave-rainbow": { order: 11, label: "Prismatic", className: "brainrot-wave-rainbow" },
+      "brainrot-wave-black-white": { order: 12, label: "Monochrome", className: "brainrot-wave-black-white" },
+      "brainrot-wave-sun": { order: 13, label: "Solar", className: "brainrot-wave-sun" },
+      "brainrot-wave-ocean": { order: 14, label: "Oceanic", className: "brainrot-wave-ocean" },
+      "brainrot-rainbow": { order: 15, label: "Secret", className: "brainrot-rainbow" },
+      "brainrot-top-secret": { order: 16, label: "Top Secret", className: "brainrot-top-secret" },
+      "brainrot-vanga": { order: 17, label: "G.O.A.T", className: "brainrot-vanga" }
+    };
+
     const darkTextAccents = new Set([
       "accent-light-yellow",
       "accent-yellow-orange",
@@ -1282,6 +1389,15 @@
     function formatMaybeAround(value, stat) {
       const formatted = formatMoney(value);
       return stat?.approximate ? `[Around] ${formatted}` : formatted;
+    }
+
+    function getRarityMeta(stat) {
+      const colorClass = brainrotColors[stat.name] || "brainrot-gray";
+      return rarityMeta[colorClass] || rarityMeta["brainrot-gray"];
+    }
+
+    function shouldHideFromOpenList(stat) {
+      return stat.name === "Ace" || stat.secretLabel === "Top Secret" || stat.secretLabel === "G.O.A.T";
     }
 
     function clearAccentClasses(element) {
@@ -1530,27 +1646,33 @@
       }
     }
 
-    function updateSearchResults(query) {
-      const normalized = query.trim().toLowerCase();
-      const matches = baseStats.filter((item) =>
-        item.hiddenExact
-          ? normalized === item.name.toLowerCase()
-          : item.name.toLowerCase().includes(normalized)
-      );
+    function renderSearchResults(matches) {
       els.results.innerHTML = "";
-
-      if (!query.trim()) {
-        els.results.classList.remove("show");
-        return;
-      }
 
       if (!matches.length) {
         els.results.innerHTML = '<div class="empty-state">No matching stats found.</div>';
       } else {
+        let currentRarity = "";
+
         for (const match of matches) {
+          const colorClass = brainrotColors[match.name] || "";
+          const rarity = getRarityMeta(match);
+
+          if (rarity.label !== currentRarity) {
+            currentRarity = rarity.label;
+            const block = document.createElement("div");
+            block.className = "search-rarity-block";
+
+            const label = document.createElement("div");
+            label.className = `search-rarity-label ${rarity.className}`;
+            label.textContent = rarity.label;
+            block.appendChild(label);
+            els.results.appendChild(block);
+          }
+
+          const block = els.results.lastElementChild;
           const option = document.createElement("div");
           option.className = `search-option${match.unavailable ? " unavailable" : ""}`;
-          const colorClass = brainrotColors[match.name] || "";
           option.innerHTML = `<span class="brainrot-name ${colorClass}">${renderBrainrotNameMarkup(match.name, colorClass)}</span><span class="subtle">${match.secretLabel || (match.unavailable ? "Unavailable" : `${match.approximate ? "[Around] " : ""}$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`)}</span>`;
           applyVangaSparkles(option.querySelector(".brainrot-name"), colorClass === "brainrot-vanga");
           if (!match.unavailable || match.secretLabel) {
@@ -1562,12 +1684,45 @@
               calculate();
             });
           }
-          els.results.appendChild(option);
+          block.appendChild(option);
         }
       }
 
       els.results.classList.add("show");
+      els.searchWrap.classList.add("open");
       setupVangaSparkleTimers();
+    }
+
+    function applySearchSize(size) {
+      els.results.classList.remove("size-small", "size-medium", "size-large");
+      els.results.classList.add(`size-${size}`);
+    }
+
+    function updateSearchResults(query) {
+      const normalized = query.trim().toLowerCase();
+      const matches = baseStats
+        .filter((item) =>
+          !normalized
+            ? !shouldHideFromOpenList(item)
+            : item.hiddenExact
+              ? normalized === item.name.toLowerCase()
+              : item.name.toLowerCase().includes(normalized)
+        )
+        .sort((a, b) => {
+          const rarityDiff = getRarityMeta(a).order - getRarityMeta(b).order;
+          if (rarityDiff !== 0) {
+            return rarityDiff;
+          }
+          return (a.value || Number.MAX_SAFE_INTEGER) - (b.value || Number.MAX_SAFE_INTEGER);
+        });
+
+      if (!normalized && !document.activeElement?.isSameNode(els.search)) {
+        els.results.classList.remove("show");
+        els.searchWrap.classList.remove("open");
+        return;
+      }
+
+      renderSearchResults(matches);
     }
 
     function calculate() {
@@ -1676,12 +1831,24 @@
       updateSearchResults(event.target.value);
     });
 
+    els.search.addEventListener("focus", () => {
+      updateSearchResults(els.search.value);
+    });
+
+    document.getElementById("searchSizeSelect").addEventListener("change", (event) => {
+      applySearchSize(event.target.value);
+      if (els.results.classList.contains("show")) {
+        updateSearchResults(els.search.value);
+      }
+    });
+
     els.clear.addEventListener("click", () => {
       els.search.value = "";
       state.selectedStat = null;
       state.hasCalculated = false;
-      els.results.classList.remove("show");
+      els.searchWrap.classList.remove("open");
       calculate();
+      updateSearchResults("");
     });
 
     els.calculateBtn.addEventListener("click", () => {
@@ -1695,12 +1862,14 @@
     document.addEventListener("click", (event) => {
       if (!event.target.closest(".search-wrap")) {
         els.results.classList.remove("show");
+        els.searchWrap.classList.remove("open");
       }
     });
 
     renderRanks();
     renderBonusGrid(els.traitsGrid, traits, "trait");
     renderBonusGrid(els.mutationsGrid, mutations, "mutation");
+    applySearchSize("medium");
     calculate();
   </script>
 </body>
