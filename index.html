@@ -579,6 +579,11 @@
       background-image: linear-gradient(180deg, #c7f6ff 0%, #6cc3ff 38%, #16358f 100%);
     }
 
+    .accent-vanga {
+      color: #8fe4ff;
+      text-shadow: var(--vanga-sparkles, 0 0 10px rgba(143, 228, 255, 0.32));
+    }
+
     .accent-rainbow {
       background-image: linear-gradient(120deg, #ff7b7b 0%, #ffba66 18%, #fff06e 36%, #82ef9f 54%, #7fd7ff 72%, #a88dff 86%, #ff8ddb 100%);
     }
@@ -699,6 +704,34 @@
       font-weight: 700;
     }
 
+    .vanga-host {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      isolation: isolate;
+    }
+
+    .vanga-letter {
+      position: relative;
+      display: inline-block;
+    }
+
+    .vanga-sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.7),
+        0 0 14px rgba(143, 228, 255, 0.55);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 2;
+      animation: vangaSparkleFloat 1s ease-out forwards;
+    }
+
     .brainrot-gray {
       color: #a9b2c3;
     }
@@ -771,6 +804,11 @@
       background-image: linear-gradient(180deg, #c7f6ff 0%, #6cc3ff 38%, #16358f 100%);
     }
 
+    .brainrot-vanga {
+      color: #8fe4ff;
+      text-shadow: var(--vanga-sparkles, 0 0 10px rgba(143, 228, 255, 0.32));
+    }
+
     .brainrot-rainbow {
       background-image: linear-gradient(120deg, #ff7b7b 0%, #ffba66 18%, #fff06e 36%, #82ef9f 54%, #7fd7ff 72%, #a88dff 86%, #ff8ddb 100%);
     }
@@ -786,6 +824,22 @@
 
       100% {
         background-position: 200% 50%;
+      }
+    }
+
+    @keyframes vangaSparkleFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(0.35);
+        opacity: 0;
+      }
+
+      18% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate3d(var(--sparkle-x, 0px), var(--sparkle-y, -18px), 0) scale(1.15);
+        opacity: 0;
       }
     }
 
@@ -832,13 +886,13 @@
 
       <div class="card">
         <div class="subtle">Base Stat</div>
-        <div class="stat-main" id="baseStat">—</div>
+        <div class="stat-main stat-accent" id="baseStat">—</div>
         <div class="subtle" id="selectedUnit">$ / Fish</div>
       </div>
 
       <div class="card">
         <div class="subtle">Mutation Total</div>
-        <div class="stat-main" id="mutationTotal">0%</div>
+        <div class="stat-main stat-accent" id="mutationTotal">0%</div>
         <div class="subtle">stacked</div>
       </div>
 
@@ -893,24 +947,24 @@
 
       <div class="card metric">
         <span class="subtle">Rank multiplier</span>
-        <span class="metric-value" id="rankMultiplier">—</span>
+        <span class="metric-value stat-accent" id="rankMultiplier">—</span>
       </div>
 
       <div class="card metric">
         <span class="subtle">Level multiplier</span>
-        <span class="metric-value" id="levelMultiplier">—</span>
+        <span class="metric-value stat-accent" id="levelMultiplier">—</span>
       </div>
 
       <div class="card metric">
         <span class="subtle">Mutation multiplier</span>
-        <span class="metric-value" id="mutationMultiplier">—</span>
+        <span class="metric-value stat-accent" id="mutationMultiplier">—</span>
       </div>
 
       <div class="divider"></div>
 
       <div class="card metric">
         <span class="subtle">Base × all multipliers</span>
-        <span class="metric-value" id="formulaValue">—</span>
+        <span class="metric-value stat-accent" id="formulaValue">—</span>
       </div>
     </aside>
   </main>
@@ -1002,12 +1056,14 @@
       { name: "Money Pug", value: 3000000000, unit: "$ / Fish" },
       { name: "Tripi Tropa", value: 4000000000, unit: "$ / Fish" },
       { name: "Cashy", value: 5000000000, unit: "$ / Fish" },
-      { name: "Rico Dinero", value: null, unit: "Unavailable", unavailable: true },
-      { name: "Arca Dragon", value: null, unit: "Unavailable", unavailable: true },
+      { name: "Rico Dinero", value: 6000000000, unit: "$ / Fish", approximate: true },
+      { name: "Arca Dragon", value: 7000000000, unit: "$ / Fish" },
+      { name: "CheeseBurger", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Chanchan", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Willi", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
       { name: "Ace", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
-      { name: "Harsh7", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true }
+      { name: "Harsh7", value: 100000000000000, unit: "$ / Fish", secretLabel: "Top Secret", hiddenExact: true },
+      { name: "Vanga", value: 1000000000000000, unit: "$ / Fish", secretLabel: "G.O.A.T", hiddenExact: true }
     ];
 
     const traits = [
@@ -1040,6 +1096,7 @@
       "brainrot-wave-black-white": ["#ffffff", "#d7d7d7", "#0f1117", "#c8ccd4"],
       "brainrot-wave-sun": ["#ffef7e", "#ffc85e", "#ffb347", "#ff9937"],
       "brainrot-wave-ocean": ["#c7f6ff", "#6cc3ff", "#3f7ff0", "#16358f"],
+      "brainrot-vanga": ["#eefcff", "#baf0ff", "#7fd7ff", "#96f7ff"],
       "brainrot-rainbow": ["#ff7b7b", "#ffba66", "#7fd7ff", "#a88dff"],
       "brainrot-top-secret": ["#0f1117", "#4d0a0f", "#ff4d4d", "#700d15"]
     };
@@ -1131,10 +1188,12 @@
       "Cashy": "brainrot-wave-ocean",
       "Rico Dinero": "brainrot-rainbow",
       "Arca Dragon": "brainrot-rainbow",
+      "CheeseBurger": "brainrot-top-secret",
       "Chanchan": "brainrot-top-secret",
       "Willi": "brainrot-top-secret",
       "Ace": "brainrot-gray",
-      "Harsh7": "brainrot-top-secret"
+      "Harsh7": "brainrot-top-secret",
+      "Vanga": "brainrot-vanga"
     };
 
     const accentMap = {
@@ -1152,6 +1211,7 @@
       "brainrot-wave-black-white": "accent-wave-black-white",
       "brainrot-wave-sun": "accent-wave-sun",
       "brainrot-wave-ocean": "accent-wave-ocean",
+      "brainrot-vanga": "accent-vanga",
       "brainrot-rainbow": "accent-rainbow",
       "brainrot-top-secret": "accent-red"
     };
@@ -1170,6 +1230,8 @@
       selectedMutations: new Set(),
       hasCalculated: false
     };
+
+    const activeVangaTimers = new Map();
 
     const els = {
       search: document.getElementById("brainrotSearch"),
@@ -1217,18 +1279,101 @@
       }).format(value);
     }
 
+    function formatMaybeAround(value, stat) {
+      const formatted = formatMoney(value);
+      return stat?.approximate ? `[Around] ${formatted}` : formatted;
+    }
+
     function clearAccentClasses(element) {
       for (const className of Object.values(accentMap)) {
         element.classList.remove(className);
       }
     }
 
+    function randomBetween(min, max) {
+      return (Math.random() * (max - min)) + min;
+    }
+
+    function buildVangaSparkles() {
+      const sparkles = [];
+      for (let i = 0; i < 7; i += 1) {
+        const x = randomBetween(-18, 18).toFixed(1);
+        const y = randomBetween(-14, 14).toFixed(1);
+        const size = randomBetween(0, 1.8).toFixed(1);
+        const color = i % 2 === 0 ? "rgba(255,255,255,0.95)" : "rgba(143,228,255,0.82)";
+        sparkles.push(`${x}px ${y}px 0 ${size}px ${color}`);
+      }
+      sparkles.push("0 0 10px rgba(143,228,255,0.32)");
+      return sparkles.join(", ");
+    }
+
+    function applyVangaSparkles(element, enabled) {
+      if (!element) return;
+      if (enabled) {
+        element.style.setProperty("--vanga-sparkles", buildVangaSparkles());
+      } else {
+        element.style.removeProperty("--vanga-sparkles");
+      }
+    }
+
+    function renderBrainrotNameMarkup(name, colorClass) {
+      if (colorClass !== "brainrot-vanga") {
+        return name;
+      }
+
+      const letters = [...name].map((letter) =>
+        `<span class="vanga-letter">${letter === " " ? "&nbsp;" : letter}</span>`
+      ).join("");
+
+      return `<span class="vanga-host" data-vanga-text="true">${letters}</span>`;
+    }
+
+    function clearVangaSparkleTimers() {
+      for (const timer of activeVangaTimers.values()) {
+        clearInterval(timer);
+      }
+      activeVangaTimers.clear();
+    }
+
+    function emitVangaSparkle(host) {
+      const letters = [...host.querySelectorAll(".vanga-letter")];
+      if (!letters.length) {
+        return;
+      }
+
+      const letter = letters[Math.floor(Math.random() * letters.length)];
+      const sparkle = document.createElement("span");
+      sparkle.className = "vanga-sparkle";
+      sparkle.style.left = `${letter.offsetLeft + (letter.offsetWidth / 2) - 3}px`;
+      sparkle.style.top = `${Math.max(0, letter.offsetTop + (letter.offsetHeight / 2) - 3)}px`;
+      sparkle.style.setProperty("--sparkle-x", `${randomBetween(-8, 8).toFixed(1)}px`);
+      sparkle.style.setProperty("--sparkle-y", `${randomBetween(-22, -10).toFixed(1)}px`);
+      sparkle.style.background = Math.random() > 0.45 ? "rgba(255,255,255,0.96)" : "rgba(143,228,255,0.88)";
+      host.appendChild(sparkle);
+
+      window.setTimeout(() => {
+        sparkle.remove();
+      }, 1050);
+    }
+
+    function setupVangaSparkleTimers() {
+      clearVangaSparkleTimers();
+      const hosts = document.querySelectorAll("[data-vanga-text='true']");
+      hosts.forEach((host) => {
+        emitVangaSparkle(host);
+        const timer = window.setInterval(() => emitVangaSparkle(host), 1000);
+        activeVangaTimers.set(host, timer);
+      });
+    }
+
     function updateSelectedBrainrotLabel() {
       els.selectedBrainrotLabel.className = "selected-brainrot-label brainrot-name";
+      applyVangaSparkles(els.selectedBrainrotLabel, false);
 
       if (!state.selectedStat) {
         els.selectedBrainrotLabel.textContent = "";
         els.searchWrap.classList.remove("has-selection");
+        setupVangaSparkleTimers();
         return;
       }
 
@@ -1236,8 +1381,10 @@
       if (brainrotClass) {
         els.selectedBrainrotLabel.classList.add(brainrotClass);
       }
-      els.selectedBrainrotLabel.textContent = state.selectedStat.name;
+      els.selectedBrainrotLabel.innerHTML = renderBrainrotNameMarkup(state.selectedStat.name, brainrotClass);
+      applyVangaSparkles(els.selectedBrainrotLabel, brainrotClass === "brainrot-vanga");
       els.searchWrap.classList.add("has-selection");
+      setupVangaSparkleTimers();
     }
 
     function getSelectedAnimatedPair() {
@@ -1251,9 +1398,23 @@
 
     function applySelectedAccent() {
       clearAccentClasses(els.calculateBtn);
+      clearAccentClasses(els.baseStat);
       clearAccentClasses(els.finalStat);
       clearAccentClasses(els.finalUnit);
+      clearAccentClasses(els.mutationTotal);
+      clearAccentClasses(els.rankMultiplier);
+      clearAccentClasses(els.levelMultiplier);
+      clearAccentClasses(els.mutationMultiplier);
+      clearAccentClasses(els.formulaValue);
       els.calculateBtn.style.color = "";
+      applyVangaSparkles(els.baseStat, false);
+      applyVangaSparkles(els.finalStat, false);
+      applyVangaSparkles(els.finalUnit, false);
+      applyVangaSparkles(els.mutationTotal, false);
+      applyVangaSparkles(els.rankMultiplier, false);
+      applyVangaSparkles(els.levelMultiplier, false);
+      applyVangaSparkles(els.mutationMultiplier, false);
+      applyVangaSparkles(els.formulaValue, false);
 
       if (!state.selectedStat) {
         return;
@@ -1264,7 +1425,34 @@
         return;
       }
 
+      const isVanga = accentClass === "accent-vanga";
+
+      if (isVanga) {
+        els.baseStat.classList.add(accentClass);
+        els.mutationTotal.classList.add(accentClass);
+        els.rankMultiplier.classList.add(accentClass);
+        els.levelMultiplier.classList.add(accentClass);
+        els.mutationMultiplier.classList.add(accentClass);
+        els.formulaValue.classList.add(accentClass);
+        els.finalStat.classList.add(accentClass);
+        els.finalUnit.classList.add("accent-light-blue");
+        applyVangaSparkles(els.baseStat, true);
+        applyVangaSparkles(els.mutationTotal, true);
+        applyVangaSparkles(els.rankMultiplier, true);
+        applyVangaSparkles(els.levelMultiplier, true);
+        applyVangaSparkles(els.mutationMultiplier, true);
+        applyVangaSparkles(els.formulaValue, true);
+        applyVangaSparkles(els.finalStat, true);
+        return;
+      }
+
       els.calculateBtn.classList.add(accentClass);
+      els.baseStat.classList.add(accentClass);
+      els.mutationTotal.classList.add(accentClass);
+      els.rankMultiplier.classList.add(accentClass);
+      els.levelMultiplier.classList.add(accentClass);
+      els.mutationMultiplier.classList.add(accentClass);
+      els.formulaValue.classList.add(accentClass);
       els.finalStat.classList.add(accentClass);
       els.finalUnit.classList.add(accentClass);
       els.calculateBtn.style.color = darkTextAccents.has(accentClass) ? "#17130c" : "#f8fbff";
@@ -1363,7 +1551,8 @@
           const option = document.createElement("div");
           option.className = `search-option${match.unavailable ? " unavailable" : ""}`;
           const colorClass = brainrotColors[match.name] || "";
-          option.innerHTML = `<span class="brainrot-name ${colorClass}">${match.name}</span><span class="subtle">${match.secretLabel || (match.unavailable ? "Unavailable" : `$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`)}</span>`;
+          option.innerHTML = `<span class="brainrot-name ${colorClass}">${renderBrainrotNameMarkup(match.name, colorClass)}</span><span class="subtle">${match.secretLabel || (match.unavailable ? "Unavailable" : `${match.approximate ? "[Around] " : ""}$${formatMoney(match.value)} ${match.unit.replace("$ /", "/")}`)}</span>`;
+          applyVangaSparkles(option.querySelector(".brainrot-name"), colorClass === "brainrot-vanga");
           if (!match.unavailable || match.secretLabel) {
             option.addEventListener("click", () => {
               state.selectedStat = match;
@@ -1378,6 +1567,7 @@
       }
 
       els.results.classList.add("show");
+      setupVangaSparkleTimers();
     }
 
     function calculate() {
@@ -1436,12 +1626,12 @@
 
       const finalValue = state.selectedStat.value * rankMult * levelMult * mutationMult;
 
-      els.finalStat.textContent = formatMoney(finalValue);
+      els.finalStat.textContent = formatMaybeAround(finalValue, state.selectedStat);
       els.finalUnit.textContent = state.selectedStat.unit;
       els.rankMultiplier.textContent = `${rankMult.toFixed(2)}×`;
       els.levelMultiplier.textContent = `${levelMult.toFixed(2)}×`;
       els.mutationMultiplier.textContent = `${mutationMult.toFixed(2)}×`;
-      els.formulaValue.textContent = `${formatMoney(finalValue)}`;
+      els.formulaValue.textContent = `${formatMaybeAround(finalValue, state.selectedStat)}`;
       renderRanks();
     }
 
