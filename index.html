@@ -1368,6 +1368,26 @@
     };
 
     function formatMoney(value) {
+      if (value >= 1000000000000000000000000000) {
+        const octillions = value / 1000000000000000000000000000;
+        return `${Number(octillions.toFixed(octillions >= 10 ? 0 : 2)).toString()}Oc`;
+      }
+
+      if (value >= 1000000000000000000000000) {
+        const septillions = value / 1000000000000000000000000;
+        return `${Number(septillions.toFixed(septillions >= 10 ? 0 : 2)).toString()}Sp`;
+      }
+
+      if (value >= 1000000000000000000000) {
+        const sextillions = value / 1000000000000000000000;
+        return `${Number(sextillions.toFixed(sextillions >= 10 ? 0 : 2)).toString()}Sx`;
+      }
+
+      if (value >= 1000000000000000000) {
+        const quintillions = value / 1000000000000000000;
+        return `${Number(quintillions.toFixed(quintillions >= 10 ? 0 : 2)).toString()}QI`;
+      }
+
       if (value >= 1000000000000000) {
         const quadrillions = value / 1000000000000000;
         return `${Number(quadrillions.toFixed(quadrillions >= 10 ? 0 : 2)).toString()}QA`;
